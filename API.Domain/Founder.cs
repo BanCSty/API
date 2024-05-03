@@ -12,9 +12,9 @@ namespace API.Domain
         public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string SecondName { get; set; }
+        public string MiddleName { get; set; }
         public DateTime DateCreate { get; set; }
-        public DateTime DateUpdate { get; set; }
+        public DateTime? DateUpdate { get; set; }
 
         public virtual ICollection<LegalEntity> LegalEntities { get; set; }
     }

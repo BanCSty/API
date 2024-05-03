@@ -13,7 +13,7 @@ namespace API.Domain
         public long INN { get; set; }
         public string Name { get; set; }
         public DateTime DateCreate { get; set; }
-        public DateTime DateUpdate { get; set; }
+        public DateTime? DateUpdate { get; set; }
         public List<Guid> FounderId{ get; set; }
 
         public virtual ICollection<Founder> Founders { get; set; }
