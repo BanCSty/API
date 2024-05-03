@@ -10,6 +10,7 @@ namespace API.DAL.EntityTypeConfigurations
         {
             builder.HasKey(founder => founder.Id);
             builder.HasIndex(founder => founder.Id).IsUnique();
+            builder.Property(founder => founder.INN).IsRequired();
             builder.Property(founder => founder.FirstName).HasMaxLength(20).IsRequired();
             builder.Property(founder => founder.LastName).HasMaxLength(20).IsRequired();
             builder.Property(founder => founder.MiddleName).HasMaxLength(20).IsRequired();

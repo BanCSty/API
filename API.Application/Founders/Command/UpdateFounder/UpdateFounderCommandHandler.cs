@@ -32,6 +32,7 @@ namespace API.Application.Founders.Command.UpdateFounder
             }
 
             entity.FirstName = request.FirstName;
+            entity.INN = request.INN;
             entity.LastName = request.LastName;
             entity.MiddleName = request.MiddleName;
             entity.DateUpdate = DateTime.Now;

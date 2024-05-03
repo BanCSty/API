@@ -22,6 +22,7 @@ namespace API.Application.Founders.Command.CreateFounder
             var founder = new Founder
             {
                 Id = Guid.NewGuid(),
+                INN = request.INN,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 MiddleName = request.MiddleName,
