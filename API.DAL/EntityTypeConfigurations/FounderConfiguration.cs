@@ -12,9 +12,7 @@ namespace API.DAL.EntityTypeConfigurations
             builder.HasIndex(founder => founder.Id).IsUnique();
             builder.Property(founder => founder.FirstName).HasMaxLength(20).IsRequired();
             builder.Property(founder => founder.LastName).HasMaxLength(20).IsRequired();
-            builder.Property(founder => founder.SecondName).HasMaxLength(20).IsRequired();
-            builder.Property(founder => founder.DateCreate).IsRequired();
-            builder.Property(founder => founder.DateUpdate).IsRequired();
+            builder.Property(founder => founder.MiddleName).HasMaxLength(20).IsRequired();
         }
     }
 }
