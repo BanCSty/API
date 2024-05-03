@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace API.Domain
 {
-    //ЮЛ
-    public class LegalEntity
+    //Учредитель
+    public class Founder
     {
         public Guid Id { get; set; }
-        public long INN { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string SecondName { get; set; }
         public DateTime DateCreate { get; set; }
         public DateTime DateUpdate { get; set; }
-
-        public virtual ICollection<Founder> Founders { get; set; }
     }
 }

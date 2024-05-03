@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace API.Domain
 {
-    //ЮЛ
-    public class LegalEntity
+    //ИП
+    public class IndividualEntrepreneur
     {
         public Guid Id { get; set; }
         public long INN { get; set; }
@@ -15,6 +15,6 @@ namespace API.Domain
         public DateTime DateCreate { get; set; }
         public DateTime DateUpdate { get; set; }
 
-        public virtual ICollection<Founder> Founders { get; set; }
+        public virtual Founder Founder { get; set; }
     }
 }
