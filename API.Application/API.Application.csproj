@@ -17,8 +17,4 @@
     <ProjectReference Include="..\API.Domain\API.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Founders\Queries\" />
-  </ItemGroup>
-
 </Project>
