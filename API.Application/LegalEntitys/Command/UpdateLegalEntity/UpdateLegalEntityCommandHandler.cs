@@ -28,7 +28,7 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
 
             if (entity == null || entity.Id != request.Id)
             {
-                throw new NotFoundException(nameof(LegalEntity), request.FounderId);
+                throw new NotFoundException(nameof(LegalEntity), request.Id);
             }
 
             entity.Name = request.Name;
