@@ -14,7 +14,5 @@ namespace API.Domain
         public string Name { get; set; }
         public DateTime DateCreate { get; set; }
         public DateTime DateUpdate { get; set; }
-
-        public virtual Founder Founder { get; set; }
     }
 }

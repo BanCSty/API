@@ -15,5 +15,7 @@ namespace API.Domain
         public string SecondName { get; set; }
         public DateTime DateCreate { get; set; }
         public DateTime DateUpdate { get; set; }
+
+        public virtual ICollection<LegalEntity> LegalEntities { get; set; }
     }
 }
