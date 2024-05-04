@@ -1,10 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Linq;
 using System.Reflection;
 
 namespace API.Application.Common.Mappings
 {
-    public class AssemblyMappingProfile
+    public class AssemblyMappingProfile : Profile
     {
         public AssemblyMappingProfile(Assembly assembly)
             => ApplyMappingsFromAssembly(assembly);
