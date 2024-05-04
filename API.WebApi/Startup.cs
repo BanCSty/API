@@ -2,13 +2,13 @@ using API.Application;
 using API.Application.Common.Mappings;
 using API.Application.Interfaces;
 using API.DAL;
+using API.WebApi.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using System.Reflection;
@@ -40,6 +40,7 @@ namespace API.WebApi
             services.AddPersistence(Configuration);
 
             services.AddControllers();
+
             services.AddSwaggerGen(config =>
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -68,6 +69,7 @@ namespace API.WebApi
 
             });
 
+            app.UseCustomExceptionHandler();
             app.UseHttpsRedirection();
 
             app.UseRouting();
