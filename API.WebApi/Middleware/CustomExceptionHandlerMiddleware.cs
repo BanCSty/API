@@ -1,7 +1,6 @@
 ﻿using API.Application.Common.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Notes.Application.Common.Exceptions;
 using System;
 using System.Net;
 using System.Text.Json;
