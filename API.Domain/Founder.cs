@@ -6,6 +6,11 @@ namespace API.Domain
     //Учредитель
     public class Founder
     {
+        public Founder()
+        {
+            LegalEntities = new List<LegalEntity>();
+        }
+
         public Guid Id { get; set; }
         public long INN { get; set; }
         public string FirstName { get; set; }
@@ -14,6 +19,9 @@ namespace API.Domain
         public DateTime DateCreate { get; set; }
         public DateTime? DateUpdate { get; set; }
 
-        public virtual ICollection<LegalEntity> LegalEntities { get; set; }
+        public List<LegalEntity>? LegalEntities { get; set; }
+
+        // Индивидуальный предприниматель, к которому привязан учредитель
+        public IndividualEntrepreneur? IndividualEntrepreneur { get; set; }
     }
 }
