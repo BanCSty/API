@@ -1,4 +1,7 @@
-﻿using API.Application.LegalEntitys.Command.CreateLegalEntity;
+﻿using API.Application.Common.Mappings;
+using API.Application.LegalEntitys.Command.CreateLegalEntity;
+using API.Domain;
+using API.WebApi.Attributes;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -9,9 +12,10 @@ using System.Threading.Tasks;
 
 namespace API.WebApi.Models.LegalEntity
 {
-    public class CreateLegalEntityDto
+    public class CreateLegalEntityDto : IMapWith<CreateLegalEntityCommand>
     {
         [Required]
+        [INN12Digits]
         public long INN { get; set; }
 
         [Required]
@@ -19,7 +23,7 @@ namespace API.WebApi.Models.LegalEntity
         public string Name { get; set; }
 
         [Required]
-        public List<Guid> FounderId { get; set; }
+        public List<Guid> FounderIds { get; set; }
 
         public void Mapping(Profile profile)
         {
@@ -28,8 +32,8 @@ namespace API.WebApi.Models.LegalEntity
                 opt => opt.MapFrom(LEDto => LEDto.INN))
                 .ForMember(LECommand => LECommand.Name,
                 opt => opt.MapFrom(LEDto => LEDto.Name))
-                .ForMember(LECommand => LECommand.FounderId,
-                opt => opt.MapFrom(LEDto => LEDto.FounderId));
+                .ForMember(LECommand => LECommand.FounderIds,
+                opt => opt.MapFrom(LEDto => LEDto.FounderIds));
         }
     }
 }
