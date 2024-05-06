@@ -14,6 +14,10 @@ namespace API.DAL.EntityTypeConfigurations
             builder.Property(founder => founder.FirstName).HasMaxLength(20).IsRequired();
             builder.Property(founder => founder.LastName).HasMaxLength(20).IsRequired();
             builder.Property(founder => founder.MiddleName).HasMaxLength(20).IsRequired();
+            
+            builder.HasOne(f => f.IndividualEntrepreneur)
+                .WithOne(ie => ie.Founder)
+                .HasForeignKey<IndividualEntrepreneur>(ie => ie.FounderId);
         }
     }
 }

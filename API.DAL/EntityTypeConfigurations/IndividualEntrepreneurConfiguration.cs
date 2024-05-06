@@ -12,6 +12,7 @@ namespace API.DAL.EntityTypeConfigurations
             builder.HasIndex(IE => IE.Id).IsUnique();
             builder.Property(IE => IE.INN).IsRequired();
             builder.Property(IE => IE.Name).HasMaxLength(30).IsRequired();
+            builder.Property(IE => IE.FounderId).IsRequired();
         }
     }
 }

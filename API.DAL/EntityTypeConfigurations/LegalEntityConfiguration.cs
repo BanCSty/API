@@ -12,7 +12,6 @@ namespace API.DAL.EntityTypeConfigurations
             builder.HasIndex(LE => LE.Id).IsUnique();
             builder.Property(LE => LE.INN).IsRequired();
             builder.Property(LE => LE.Name).HasMaxLength(30).IsRequired();
-            builder.Property(LE => LE.FounderId).IsRequired();
 
 
             /*
