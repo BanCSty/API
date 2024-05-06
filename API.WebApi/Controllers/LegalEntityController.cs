@@ -6,6 +6,7 @@ using API.Application.LegalEntitys.Queries.GetLegalEntityList;
 using API.Domain;
 using API.WebApi.Models.LegalEntity;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,6 +14,10 @@ using System.Threading.Tasks;
 
 namespace API.WebApi.Controllers
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Produces("application/json")]
+    [Route("api/{version:apiVersion}/[controller]")]
     public class LegalEntityController : BaseController
     {
         public readonly IMapper _mapper;
@@ -55,7 +60,7 @@ namespace API.WebApi.Controllers
         /// <response code="200">Success</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<LegalEntity>> GetAll(Guid id)
+        public async Task<ActionResult<LegalEntityDetailsVm>> GetAll(Guid id)
         {
             //Сформируем запрос и с помощью Mediatotr отправим, затем результат вернем колиенту
             var query = new GetLegalEntityDetailsQuery

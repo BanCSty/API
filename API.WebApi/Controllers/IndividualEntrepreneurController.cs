@@ -5,6 +5,7 @@ using API.Application.IndividualEntrepreneurs.Queries.GetIEList;
 using API.Domain;
 using API.WebApi.Models.IndividualEntrepreneur;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,6 +16,10 @@ using System.Threading.Tasks;
 
 namespace API.WebApi.Controllers
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Produces("application/json")]
+    [Route("api/{version:apiVersion}/[controller]")]
     public class IndividualEntrepreneurController : BaseController
     {
         public readonly IMapper _mapper;
@@ -57,9 +62,8 @@ namespace API.WebApi.Controllers
         /// <response code="200">Success</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IndividualEntrepreneur>> GetAll(Guid id)
+        public async Task<ActionResult<IEDetailsVm>> GetAll(Guid id)
         {
-            //Сформируем запрос и с помощью Mediatotr отправим, затем результат вернем колиенту
             var query = new GetIEDetailsQuery
             {
                 Id = id

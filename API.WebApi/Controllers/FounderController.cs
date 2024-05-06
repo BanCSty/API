@@ -4,8 +4,9 @@ using API.Application.Founders.Command.UpdateFounder;
 using API.Application.Founders.Queries.GetFoundDetails;
 using API.Application.Founders.Queries.GetFounderList;
 using API.Domain;
-using API.WebApi.Models.Founder;
+using API.WebApi.Models.Founders;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,9 +14,13 @@ using System.Threading.Tasks;
 
 namespace API.WebApi.Controllers
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Produces("application/json")]
+    [Route("api/{version:apiVersion}/[controller]")]
     public class FounderController : BaseController
     {
-        public readonly IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public FounderController(IMapper mapper)
         {
@@ -51,11 +56,11 @@ namespace API.WebApi.Controllers
         /// GET /founder/D34D349E-43B8-429E-BCA4-793C932FD580
         /// </remarks>
         /// <param name="id">Founder id (guid)</param>
-        /// <returns>Returns Founder</returns>
+        /// <returns>Returns FounderDto</returns>
         /// <response code="200">Success</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Founder>> GetAll(Guid id)
+        public async Task<ActionResult<FounderDetailsVm>> GetAll(Guid id)
         {
             //Сформируем запрос и с помощью Mediatotr отправим, затем результат вернем колиенту
             var query = new GetFounderDetailsQuery

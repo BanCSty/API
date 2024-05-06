@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System;
+using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,5 @@ namespace API.WebApi.Controllers
         private IMediator _mediator;
         protected IMediator Mediator =>
             _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
-
     }
 }
