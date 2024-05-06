@@ -1,4 +1,6 @@
-﻿using API.Application.IndividualEntrepreneurs.Command.UpdateIE;
+﻿using API.Application.Common.Mappings;
+using API.Application.IndividualEntrepreneurs.Command.UpdateIE;
+using API.WebApi.Attributes;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -9,17 +11,21 @@ using System.Threading.Tasks;
 
 namespace API.WebApi.Models.IndividualEntrepreneur
 {
-    public class UpdateIEDto
+    //Update ИП|IndividualEntrepreneur
+    public class UpdateIEDto : IMapWith<UpdateIECommand>
     {
         [Required]
         public Guid Id { get; set; }
 
         [Required]
+        [INN12Digits]
         public long INN { get; set; }
 
         [Required]
         [MaxLength(30)]
         public string Name { get; set; }
+
+        public Guid FounderId { get; set; }
 
         public void Mapping(Profile profile)
         {
@@ -29,7 +35,9 @@ namespace API.WebApi.Models.IndividualEntrepreneur
                 .ForMember(IECommand => IECommand.INN,
                 opt => opt.MapFrom(IEDto => IEDto.INN))
                 .ForMember(IECommand => IECommand.Name,
-                opt => opt.MapFrom(IEDto => IEDto.Name));
+                opt => opt.MapFrom(IEDto => IEDto.Name))
+                .ForMember(dest => dest.FounderId, 
+                opt => opt.MapFrom(src => src.FounderId != default ? src.FounderId : Guid.Empty));
         }
     }
 }
