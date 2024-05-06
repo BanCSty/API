@@ -33,7 +33,7 @@ namespace API.Application.Founders.Command.UpdateFounder
                 throw new ArgumentException($"INN: {request.INN} already used");
             }
 
-
+            //Получить Founder по Id request
             var founder = await _dbContext.Founders
                 .Include(f => f.LegalEntities)
                 .FirstOrDefaultAsync(f => f.Id == request.Id, cancellationToken);
@@ -41,11 +41,6 @@ namespace API.Application.Founders.Command.UpdateFounder
             if (founder == null || founder.Id != request.Id)
             {
                 throw new NotFoundException(nameof(Founder), request.Id);
-            }
-
-            if (founder != null && founderExist.INN != request.INN)
-            {
-                throw new ArgumentException($"INN: {request.INN} already used");
             }
 
             // Получить объекты ЮЛ на основе массива идентификаторов LegalEntityIds
