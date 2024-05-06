@@ -19,13 +19,13 @@ namespace API.WebApi.Attributes
             long inn;
             if (!long.TryParse(value.ToString(), out inn))
             {
-                return new ValidationResult("INN должен быть числом.");
+                return new ValidationResult("INN must be a number");
             }
 
             string innString = inn.ToString();
             if (innString.Length != 12)
             {
-                return new ValidationResult("INN должен состоять из 12 цифр.");
+                return new ValidationResult("INN must be a 12 digit number");
             }
 
             return ValidationResult.Success;
