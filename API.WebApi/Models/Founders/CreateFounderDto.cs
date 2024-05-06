@@ -1,17 +1,20 @@
-﻿using API.Application.Founders.Command.UpdateFounder;
+﻿using API.Application.Common.Mappings;
+using API.Application.Founders.Command.CreateFounder;
+using API.WebApi.Attributes;
 using AutoMapper;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-
-namespace API.WebApi.Models.Founder
+namespace API.WebApi.Models.Founders
 {
-    public class UpdateFounderDto
+    public class CreateFounderDto : IMapWith<CreateFounderCommand>
     {
         [Required]
-        public Guid Id { get; set; }
-
-        [Required]
+        [INN12Digits]
         public long INN { get; set; }
 
         [Required]
@@ -28,9 +31,7 @@ namespace API.WebApi.Models.Founder
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<UpdateFounderDto, UpdateFounderCommand>()
-                .ForMember(founderCommand => founderCommand.FounderId,
-                opt => opt.MapFrom(founderDto => founderDto.Id))
+            profile.CreateMap<CreateFounderDto, CreateFounderCommand>()
                 .ForMember(founderCommand => founderCommand.INN,
                 opt => opt.MapFrom(founderDto => founderDto.INN))
                 .ForMember(founderCommand => founderCommand.FirstName,

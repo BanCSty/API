@@ -1,17 +1,21 @@
-﻿using API.Application.Founders.Command.CreateFounder;
+﻿using API.Application.Common.Mappings;
+using API.Application.Founders.Command.UpdateFounder;
+using API.WebApi.Attributes;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace API.WebApi.Models.Founder
+
+namespace API.WebApi.Models.Founders
 {
-    public class CreateFounderDto
+    public class UpdateFounderDto : IMapWith<UpdateFounderCommand>
     {
         [Required]
+        public Guid Id { get; set; }
+
+        [Required]
+        [INN12Digits]
         public long INN { get; set; }
 
         [Required]
@@ -26,9 +30,13 @@ namespace API.WebApi.Models.Founder
         [MaxLength(20)]
         public string MiddleName { get; set; }
 
+        public List<Guid>? LegalEntityIds { get; set; }
+
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateFounderDto, CreateFounderCommand>()
+            profile.CreateMap<UpdateFounderDto, UpdateFounderCommand>()
+                .ForMember(founderCommand => founderCommand.Id,
+                opt => opt.MapFrom(founderDto => founderDto.Id))
                 .ForMember(founderCommand => founderCommand.INN,
                 opt => opt.MapFrom(founderDto => founderDto.INN))
                 .ForMember(founderCommand => founderCommand.FirstName,
@@ -36,7 +44,9 @@ namespace API.WebApi.Models.Founder
                 .ForMember(founderCommand => founderCommand.LastName,
                 opt => opt.MapFrom(founderDto => founderDto.LastName))
                 .ForMember(founderCommand => founderCommand.MiddleName,
-                opt => opt.MapFrom(founderDto => founderDto.MiddleName));
+                opt => opt.MapFrom(founderDto => founderDto.MiddleName))
+                .ForMember(founderCommand => founderCommand.LegalEntityIds,
+                opt => opt.MapFrom(founderDto => founderDto.LegalEntityIds));
         }
     }
 }
