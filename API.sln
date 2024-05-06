@@ -8,16 +8,27 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Domain", "API.Domain\API.Domain.csproj", "{531EDC40-3B29-43A3-AE7E-C0EF1D87B806}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API.Application", "API.Application", "{116E4712-4721-4079-BB80-963C73038F39}"
+	ProjectSection(SolutionItems) = preProject
+		API.Application\README.md = API.Application\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Application", "API.Application\API.Application.csproj", "{1FA2A2C5-200C-460E-99F9-D0559D851497}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API.DAL", "API.DAL", "{EE32D407-2A42-4EDB-B280-33EA25CBDD1A}"
+	ProjectSection(SolutionItems) = preProject
+		API.DAL\README.md = API.DAL\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.DAL", "API.DAL\API.DAL.csproj", "{7E0637CE-1A7B-4EF0-8C5F-69A47D9D248D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API.WebAPI", "API.WebAPI", "{092C15BD-1313-4FDF-95E2-78E47C963FB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.WebApi", "API.WebApi\API.WebApi.csproj", "{359536BA-6595-49B2-8DFB-AC91285EC950}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.WebApi", "API.WebApi\API.WebApi.csproj", "{359536BA-6595-49B2-8DFB-AC91285EC950}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2FB10821-A3A5-4686-B973-3B9C44CA0853}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
