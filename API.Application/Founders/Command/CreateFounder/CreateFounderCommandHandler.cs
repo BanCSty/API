@@ -1,6 +1,7 @@
 ﻿using API.Application.Interfaces;
 using API.Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,15 @@ namespace API.Application.Founders.Command.CreateFounder
 
         public async Task<Guid> Handle(CreateFounderCommand request, CancellationToken cancellationToken)
         {
+            //Получим сущность с ИНН из запроса на обновление
+            var founderExist = await _dbContext.Founders.FirstOrDefaultAsync(f => f.INN == request.INN, cancellationToken);
+            //Если Founder INN уже существует и используется в другой сущности(отличной от изменяемой)
+            //, то выбрасываем исключение.Для предотвращения данных учредителей с одинаковыми ИНН
+            if (founderExist != null)
+            {
+                throw new ArgumentException($"INN: {request.INN} already used");
+            }
+
             var founder = new Founder
             {
                 Id = Guid.NewGuid(),
