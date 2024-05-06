@@ -7,6 +7,7 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
         public CreateIECommandValidator()
         {
             RuleFor(createIECommand => createIECommand.INN).NotEmpty();
+            RuleFor(createIECommand => createIECommand.FounderId).NotEmpty();
             RuleFor(createIECommand => createIECommand.Name).NotEmpty().MaximumLength(30);
         }
     }

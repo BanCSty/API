@@ -22,18 +22,35 @@ namespace API.Application.IndividualEntrepreneurs.Command.UpdateIE
         public async Task<Unit> Handle(UpdateIECommand request,
             CancellationToken cancellationToken)
         {
-            var entity =
-                await _dbContext.IndividualEntrepreneurs.FirstOrDefaultAsync
-                (LE => LE.Id == request.Id, cancellationToken);
+            //Получаем IndividualEntrepreneur по INN 
+            var IeInnExists = await _dbContext.IndividualEntrepreneurs
+                .FirstOrDefaultAsync(IE => IE.INN == request.INN, cancellationToken);
+            //Если такой INN уже используется и он не равен исходной сущности,
+            //выбрасываем исключение. Для предотвращения данных ИП с одинаковыми ИНН
+            if (IeInnExists != null && IeInnExists.Id != request.Id)
+                throw new ArgumentException($"INN: {request.INN} already used");
 
-            if (entity == null || entity.Id != request.Id)
+            var entity = await _dbContext.IndividualEntrepreneurs.FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
+
+            if (entity == null)
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
 
+            // Обновляем данные IndividualEntrepreneur
             entity.Name = request.Name;
             entity.INN = request.INN;
             entity.DateUpdate = DateTime.Now;
+
+
+            //Находим учредителей, на которых хотим записать ИП
+            var founder = await _dbContext.Founders.FirstOrDefaultAsync(f => f.Id == request.FounderId);
+
+            //Если учредитель существует и у него нет активных ИП то присваиваем ему сущность ИП
+            if (founder != null && founder.IndividualEntrepreneur == null)
+            {
+                founder.IndividualEntrepreneur = entity;
+            }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

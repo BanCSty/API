@@ -1,6 +1,8 @@
-﻿using API.Application.Interfaces;
+﻿using API.Application.Common.Exceptions;
+using API.Application.Interfaces;
 using API.Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +21,23 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
 
         public async Task<Guid> Handle(CreateIECommand request, CancellationToken cancellationToken)
         {
-            var IE = new IndividualEntrepreneur
+            //Получим сущность ИП по ИНН
+            var IeInnExists = await _dbContext.IndividualEntrepreneurs
+                .FirstOrDefaultAsync(IE => IE.INN == request.INN, cancellationToken);
+            //Если Founder INN уже существует, то выбрасываем исключение
+            //.Для предотвращения данных ИП с одинаковыми ИНН
+            if (IeInnExists != null)
+                throw new ArgumentException($"INN: {request.INN} already used");
+
+            // Находим учредителя по его Id
+            var founder = await _dbContext.Founders.FindAsync(request.FounderId);
+            if (founder == null)
+            {
+                throw new NotFoundException(nameof(IndividualEntrepreneur), request.FounderId);
+            }
+
+            // Создаем нового индивидуального предпринимателя
+            var individualEntrepreneur = new IndividualEntrepreneur
             {
                 Id = Guid.NewGuid(),
                 INN = request.INN,
@@ -28,10 +46,20 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
                 DateUpdate = null,
             };
 
-            await _dbContext.IndividualEntrepreneurs.AddAsync(IE);
+            // Добавляем созданного индивидуального предпринимателя к учредителю
+            founder.IndividualEntrepreneur = individualEntrepreneur;
+
+            //добавляем учредителя к индивидуальному предпринимателю 
+            individualEntrepreneur.Founder = founder;
+
+            // Добавляем индивидуального предпринимателя в контекст базы данных
+            await _dbContext.IndividualEntrepreneurs.AddAsync(individualEntrepreneur);
+
+            // Сохраняем изменения в базе данных
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return IE.Id;
+            // Возвращаем Id нового индивидуального предпринимателя
+            return individualEntrepreneur.Id;
         }
     }
 }

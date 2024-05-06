@@ -7,5 +7,6 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
     {
         public long INN { get; set; }
         public string Name { get; set; }
+        public Guid FounderId { get; set; }
     }
 }

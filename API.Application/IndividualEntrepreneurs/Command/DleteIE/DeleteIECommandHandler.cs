@@ -2,6 +2,7 @@
 using API.Application.Interfaces;
 using API.Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,18 +20,32 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
 
         public async Task<Unit> Handle(DeleteIECommand request, CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.IndividualEntrepreneurs
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            // Находим учредителя, связанного с IndividualEntrepreneurId
+            var founder = await _dbContext.Founders
+                .SingleOrDefaultAsync(f => f.Id == request.Id, cancellationToken);
 
-            if (entity == null || entity.Id != request.Id)
+            if (founder != null)
+            {
+                // Удаляем связь учредителя с IndividualEntrepreneur
+                _dbContext.Founders.RemoveRange(founder);
+            }
+
+            // Находим IndividualEntrepreneur
+            var entity = await _dbContext.IndividualEntrepreneurs
+                .FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
+
+            if (entity == null)
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
 
+            // Удаляем IndividualEntrepreneur
             _dbContext.IndividualEntrepreneurs.Remove(entity);
+
+            // Сохраняем изменения в базе данных
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            //Пустой ответ(для тестирования)
+            // Возвращаем пустой ответ
             return Unit.Value;
         }
     }
