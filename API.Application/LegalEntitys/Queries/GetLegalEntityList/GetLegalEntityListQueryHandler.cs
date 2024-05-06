@@ -1,8 +1,11 @@
 ﻿using API.Application.Interfaces;
+using API.Domain;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +28,7 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityList
             (GetLegalEntityListQuery request, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.LegalEntitys
+                .AsNoTracking()
                 .ProjectTo<LegalEntityLookUpDto>(_mapper.ConfigurationProvider)//Проецирует коллекцию в соотв. с конфигур
                 .ToListAsync(cancellationToken);
 

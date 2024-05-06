@@ -2,8 +2,10 @@
 using API.Application.Interfaces;
 using API.Domain;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,8 +28,10 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
             (GetLegalEntityDetailsQuery request, CancellationToken cancellationToken)
         {
             var entity =
-                await _dbContext.LegalEntitys.FirstOrDefaultAsync
-                (LE => LE.Id == request.Id, cancellationToken);
+                await _dbContext.LegalEntitys
+                .AsNoTracking()
+                .Include(le => le.Founders)
+                .FirstOrDefaultAsync(LE => LE.Id == request.Id, cancellationToken);
 
             if (entity == null || entity.Id != request.Id)
             {

@@ -11,7 +11,6 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
             RuleFor(updateLECommand => updateLECommand.Id).NotEqual(Guid.Empty);
             RuleFor(updateLECommand => updateLECommand.INN).NotEmpty();
             RuleFor(updateLECommand => updateLECommand.Name).NotEmpty().MaximumLength(30);
-            //RuleFor(updateLECommand => updateLECommand.FounderId).NotEmpty();
         }
     }
 }

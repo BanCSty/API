@@ -13,7 +13,6 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
         {
             RuleFor(createLECommand => createLECommand.INN).NotEmpty();
             RuleFor(createLECommand => createLECommand.Name).NotEmpty().MaximumLength(30);
-            RuleFor(createLECommand => createLECommand.FounderId).NotEmpty();
         }
     }
 }
