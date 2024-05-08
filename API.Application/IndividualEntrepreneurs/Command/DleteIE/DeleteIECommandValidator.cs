@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System;
 
-namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
+namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
 {
     public class DeleteIECommandValidator : AbstractValidator<DeleteIECommand>
     {

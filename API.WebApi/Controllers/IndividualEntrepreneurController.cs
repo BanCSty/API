@@ -1,17 +1,14 @@
 ﻿using API.Application.IndividualEntrepreneurs.Command.CreateIE;
+using API.Application.IndividualEntrepreneurs.Command.DeleteIE;
 using API.Application.IndividualEntrepreneurs.Command.UpdateIE;
 using API.Application.IndividualEntrepreneurs.Queries.GetIEDetails;
 using API.Application.IndividualEntrepreneurs.Queries.GetIEList;
-using API.Domain;
 using API.WebApi.Models.IndividualEntrepreneur;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace API.WebApi.Controllers

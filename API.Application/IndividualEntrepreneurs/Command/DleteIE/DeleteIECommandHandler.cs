@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
+namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
 {
     public class DeleteIECommandHandler
         : IRequestHandler<DeleteIECommand>
