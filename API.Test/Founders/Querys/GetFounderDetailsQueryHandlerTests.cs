@@ -1,4 +1,5 @@
-﻿using API.Application.Founders.Queries.GetFoundDetails;
+﻿using API.Application.Common.Exceptions;
+using API.Application.Founders.Queries.GetFoundDetails;
 using API.DAL;
 using API.Test.Common;
 using AutoMapper;
@@ -39,6 +40,21 @@ namespace API.Test.Founders.Querys
             // Assert
             result.ShouldBeOfType<FounderDetailsVm>();
             result.INN.ShouldBe(123456789101);
+        }
+
+        [Fact]
+        public async Task GetFounderDetailsQueryHandler_FailOnWrongId()
+        {
+            // Arrange
+            var handler = new GetFounderDetailsQueryHandler(Context, Mapper);
+
+            // Assert
+            await Assert.ThrowsAsync<NotFoundException>(async () =>
+                await handler.Handle(
+                    new GetFounderDetailsQuery
+                    {
+                        Id = Guid.Parse("a0e6cbae-68f3-4001-bcdc-5ce3f5114308")
+                    }, CancellationToken.None));
         }
     }
 }
