@@ -39,8 +39,9 @@ namespace API.Test.IndividualEntrepreneurs.Command
 
             }, CancellationToken.None);
 
+            //Удалилось ли ИП
             Assert.Null(Context.IndividualEntrepreneurs.SingleOrDefault(Ie =>
-                Ie.Id == EntityContextFactory.FounderA.Id));
+                Ie.Id == EntityContextFactory.IndividualEntrepreneurA.Id));
 
             //Удалилась ли сущность ИП из учредителя
             Assert.Null(Context.Founders.SingleOrDefault(founders =>

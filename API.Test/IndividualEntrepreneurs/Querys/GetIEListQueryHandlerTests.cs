@@ -18,7 +18,7 @@ namespace API.Test.IndividualEntrepreneurs.Querys
 
         public GetIEListQueryHandlerTests(QueryTestFixture fixture)
         {
-            //Context = fixture.Context;
+            Context = fixture.Context;
             Mapper = fixture.Mapper;
         }
 

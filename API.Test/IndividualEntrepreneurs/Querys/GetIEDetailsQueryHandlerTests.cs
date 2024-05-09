@@ -13,12 +13,12 @@ using Xunit;
 namespace API.Test.IndividualEntrepreneurs.Querys
 {
     [Collection("QueryCollection")]
-    public class GetIEDetailsQueryHandletTests
+    public class GetIEDetailsQueryHandlerTests
     {
         private readonly ApiDbContext Context;
         private readonly IMapper Mapper;
 
-        public GetIEDetailsQueryHandletTests(QueryTestFixture fixture)
+        public GetIEDetailsQueryHandlerTests(QueryTestFixture fixture)
         {
             Context = fixture.Context;
             Mapper = fixture.Mapper;
