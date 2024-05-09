@@ -22,7 +22,7 @@ namespace API.Test.Founders.Querys
         }
 
         [Fact]
-        public async Task GetNoteListQueryHandler_Success()
+        public async Task GetFounderListQueryHandler_Success()
         {
             // Arrange
             var handler = new GetFounderListQueryHandler(Context, Mapper);

@@ -33,7 +33,7 @@ namespace API.Test.Founders.Querys
             var result = await handler.Handle(
                 new GetFounderDetailsQuery
                 {
-                    Id = Guid.Parse("b0e6cbae-68f3-4001-bcdc-5ce3f5114308")
+                    Id = EntityContextFactory.FounderA.Id
                 },
                 CancellationToken.None);
 
@@ -53,7 +53,7 @@ namespace API.Test.Founders.Querys
                 await handler.Handle(
                     new GetFounderDetailsQuery
                     {
-                        Id = Guid.Parse("a0e6cbae-68f3-4001-bcdc-5ce3f5114308")
+                        Id = Guid.NewGuid()
                     }, CancellationToken.None));
         }
     }

@@ -35,8 +35,9 @@ namespace API.Test.Common
 
         public static IndividualEntrepreneur IndividualEntrepreneurA = new IndividualEntrepreneur
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("de83865b-c636-42ec-9774-60398792dcbe"),
             Name = "IE Streem",
+            INN = 225252525222,
             DateCreate = DateTime.Now,
             DateUpdate = null,
             FounderId = FounderA.Id,
@@ -44,7 +45,8 @@ namespace API.Test.Common
         };
         public static IndividualEntrepreneur IndividualEntrepreneurB = new IndividualEntrepreneur
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("ee83865b-c636-42ec-9774-60398792dcbe"),
+            INN = 325252525222,
             Name = "IE Volga",
             DateCreate = DateTime.Now,
             DateUpdate = null,
@@ -55,6 +57,7 @@ namespace API.Test.Common
         public static LegalEntity LegalEntityA = new LegalEntity
         {
             Id = Guid.NewGuid(),
+            INN = 425252525222,
             Name = "OOO Doom",
             DateCreate = DateTime.Now,
             DateUpdate = null,
@@ -64,6 +67,7 @@ namespace API.Test.Common
         public static LegalEntity LegalEntityB = new LegalEntity
         {
             Id = Guid.NewGuid(),
+            INN = 525252525222,
             Name = "OOO Latron",
             DateCreate = DateTime.Now,
             DateUpdate = null,

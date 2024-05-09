@@ -27,8 +27,8 @@ namespace API.Test.Founders.Command
             }, CancellationToken.None);
 
             // Assert - проверка результата
-            Assert.Null(Context.Founders.SingleOrDefault(note =>
-                note.Id == EntityContextFactory.FounderA.Id));
+            Assert.Null(Context.Founders.SingleOrDefault(founder =>
+                founder.Id == EntityContextFactory.FounderA.Id));
         }
 
         [Fact]
