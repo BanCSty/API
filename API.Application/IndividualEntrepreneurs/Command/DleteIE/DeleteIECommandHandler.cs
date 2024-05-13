@@ -20,17 +20,7 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
 
         public async Task<Unit> Handle(DeleteIECommand request, CancellationToken cancellationToken)
         {
-            // Находим учредителя, связанного с IndividualEntrepreneurId
-            var founder = await _dbContext.Founders
-                .SingleOrDefaultAsync(f => f.Id == request.Id, cancellationToken);
-
-            if (founder != null)
-            {
-                // Удаляем связь учредителя с IndividualEntrepreneur
-                _dbContext.Founders.RemoveRange(founder);
-            }
-
-            // Находим IndividualEntrepreneur
+            // Находим IndividualEntrepreneur по Id запроса
             var entity = await _dbContext.IndividualEntrepreneurs
                 .FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
 
@@ -38,6 +28,17 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
+
+            _dbContext.Entry(entity).Reference(IE => IE.Founder).Load();
+
+            // Находим учредителя, связанного с IndividualEntrepreneurId
+            var founder = await _dbContext.Founders
+                .Include(f => f.IndividualEntrepreneur)
+                .SingleOrDefaultAsync(f => f.Id == entity.FounderId, cancellationToken);
+
+            //Если есть учредитель связанный с этим ИП, то это поле в таблице учредителей будет null
+            if (founder != null)
+                founder.IndividualEntrepreneur = null;
 
             // Удаляем IndividualEntrepreneur
             _dbContext.IndividualEntrepreneurs.Remove(entity);

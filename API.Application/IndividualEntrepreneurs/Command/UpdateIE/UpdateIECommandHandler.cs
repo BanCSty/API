@@ -30,12 +30,15 @@ namespace API.Application.IndividualEntrepreneurs.Command.UpdateIE
             if (IeInnExists != null && IeInnExists.Id != request.Id)
                 throw new ArgumentException($"INN: {request.INN} already used");
 
-            var entity = await _dbContext.IndividualEntrepreneurs.FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
+            var entity = await _dbContext.IndividualEntrepreneurs
+                .FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
+
+            _dbContext.Entry(entity).Reference(IE => IE.Founder).Load();
 
             // Обновляем данные IndividualEntrepreneur
             entity.Name = request.Name;
@@ -44,7 +47,9 @@ namespace API.Application.IndividualEntrepreneurs.Command.UpdateIE
 
 
             //Находим учредителей, на которых хотим записать ИП
-            var founder = await _dbContext.Founders.FirstOrDefaultAsync(f => f.Id == request.FounderId);
+            var founder = await _dbContext.Founders
+                .Include(f => f.IndividualEntrepreneur)
+                .FirstOrDefaultAsync(f => f.Id == request.FounderId, cancellationToken);
 
             //Если учредитель существует и у него нет активных ИП то присваиваем ему сущность ИП
             if (founder != null && founder.IndividualEntrepreneur == null)

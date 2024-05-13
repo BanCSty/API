@@ -26,8 +26,8 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
         {
             var entity =
                 await _dbContext.IndividualEntrepreneurs
-                .AsNoTracking()
                 .Include(f => f.Founder)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(LE => LE.Id == request.Id, cancellationToken);
 
             if (entity == null || entity.Id != request.Id)

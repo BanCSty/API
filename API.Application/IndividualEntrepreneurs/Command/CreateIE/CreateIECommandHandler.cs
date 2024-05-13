@@ -24,8 +24,8 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
             //Получим сущность ИП по ИНН
             var IeInnExists = await _dbContext.IndividualEntrepreneurs
                 .FirstOrDefaultAsync(IE => IE.INN == request.INN, cancellationToken);
-            //Если Founder INN уже существует, то выбрасываем исключение
-            //.Для предотвращения данных ИП с одинаковыми ИНН
+            //Если Founder INN уже существует, то выбрасываем исключение.
+            //Для предотвращения данных ИП с одинаковыми ИНН
             if (IeInnExists != null)
                 throw new ArgumentException($"INN: {request.INN} already used");
 
@@ -35,6 +35,9 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.FounderId);
             }
+
+            //Подгрузим ИП учредителя(если есть)
+            _dbContext.Entry(founder).Reference(f => f.IndividualEntrepreneur).Load();
 
             // Создаем нового индивидуального предпринимателя
             var individualEntrepreneur = new IndividualEntrepreneur
