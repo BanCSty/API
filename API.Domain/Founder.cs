@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace API.Domain
 {
@@ -19,9 +20,10 @@ namespace API.Domain
         public DateTime DateCreate { get; set; }
         public DateTime? DateUpdate { get; set; }
 
-        public List<LegalEntity>? LegalEntities { get; set; }
+        //Юридическое лицо, к которому привязан учредитель
+        public virtual ICollection<LegalEntity>? LegalEntities { get; set; }
 
         // Индивидуальный предприниматель, к которому привязан учредитель
-        public IndividualEntrepreneur? IndividualEntrepreneur { get; set; }
+        public virtual IndividualEntrepreneur? IndividualEntrepreneur { get; set; }
     }
 }

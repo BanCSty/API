@@ -16,6 +16,6 @@ namespace API.Domain
         public Guid FounderId { get; set; }
 
         // Учредитель ИП
-        public Founder Founder { get; set; }
+        public virtual Founder Founder { get; set; }
     }
 }

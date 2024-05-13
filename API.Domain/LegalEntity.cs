@@ -17,6 +17,6 @@ namespace API.Domain
         public DateTime DateCreate { get; set; }
         public DateTime? DateUpdate { get; set; }
 
-        public List<Founder> Founders { get; set; }
+        public virtual ICollection<Founder> Founders { get; set; }
     }
 }
