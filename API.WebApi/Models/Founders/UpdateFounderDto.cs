@@ -32,6 +32,8 @@ namespace API.WebApi.Models.Founders
 
         public List<Guid>? LegalEntityIds { get; set; }
 
+        public Guid? IndividualEntrepreneurId { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<UpdateFounderDto, UpdateFounderCommand>()
@@ -46,7 +48,9 @@ namespace API.WebApi.Models.Founders
                 .ForMember(founderCommand => founderCommand.MiddleName,
                 opt => opt.MapFrom(founderDto => founderDto.MiddleName))
                 .ForMember(founderCommand => founderCommand.LegalEntityIds,
-                opt => opt.MapFrom(founderDto => founderDto.LegalEntityIds));
+                opt => opt.MapFrom(founderDto => founderDto.LegalEntityIds))
+                .ForMember(founderCommand => founderCommand.IndividualEntrepreneurId,
+                opt => opt.MapFrom(founderDto => founderDto.IndividualEntrepreneurId));
         }
     }
 }
