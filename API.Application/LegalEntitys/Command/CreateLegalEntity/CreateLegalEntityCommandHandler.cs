@@ -41,6 +41,7 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
 
             // Получить объекты учредителей на основе массива идентификаторов FounderIds
             var founders = await _dbContext.Founders
+                .Include(f => f.LegalEntities)
                 .Where(f => request.FounderIds.Contains(f.Id))
                 .ToListAsync();
 

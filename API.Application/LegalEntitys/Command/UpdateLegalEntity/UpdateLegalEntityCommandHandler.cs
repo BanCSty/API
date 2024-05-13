@@ -33,7 +33,7 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
 
             // Получить LegalEntity из базы данных
             var legalEntity = await _dbContext.LegalEntitys
-                .Include(l => l.Founders)
+                
                 .FirstOrDefaultAsync(l => l.Id == request.Id, cancellationToken);
 
             if (legalEntity == null || legalEntity.Id != request.Id)
@@ -41,14 +41,18 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
                 throw new NotFoundException(nameof(LegalEntity), request.Id);
             }
 
+            _dbContext.Entry(legalEntity).Collection(LE => LE.Founders).Load();
+
             // Получить объекты учредителей на основе массива идентификаторов FounderIds
             var founders = await _dbContext.Founders
+                .Include(f => f.LegalEntities)
                 .Where(f => request.FounderIds.Contains(f.Id))
                 .ToListAsync();
 
             // Добавить новых учредителей к юридическому лицу
             foreach (var founder in founders)
             {
+                //Если учредитель еще не связан с ЮЛ происходит привязка
                 if (!legalEntity.Founders.Any(f => f.Id == founder.Id))
                 {
                     legalEntity.Founders.Add(founder);

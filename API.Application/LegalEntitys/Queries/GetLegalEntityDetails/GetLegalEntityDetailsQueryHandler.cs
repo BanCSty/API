@@ -29,8 +29,8 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
         {
             var entity =
                 await _dbContext.LegalEntitys
-                .AsNoTracking()
                 .Include(le => le.Founders)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(LE => LE.Id == request.Id, cancellationToken);
 
             if (entity == null || entity.Id != request.Id)

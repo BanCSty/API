@@ -27,13 +27,16 @@ namespace API.Application.LegalEntitys.Command.DeleteLegalEntity
         {
             // Находим удаляемую сущность LegalEntity
             var entity = await _dbContext.LegalEntitys
-                .Include(le => le.Founders) // Включаем связанные учредители
+                //.Include(le => le.Founders) // Включаем связанные учредители
                 .FirstOrDefaultAsync(le => le.Id == request.Id, cancellationToken);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(LegalEntity), request.Id);
             }
+            
+            //Подгружаем учредителей
+            _dbContext.Entry(entity).Collection(LE => LE.Founders).Load();
 
             // Удаляем ссылку на удаляемую сущность LegalEntity из каждой сущности Founder
             foreach (var founder in entity.Founders)
