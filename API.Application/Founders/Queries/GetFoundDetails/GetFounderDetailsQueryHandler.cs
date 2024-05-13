@@ -28,7 +28,7 @@ namespace API.Application.Founders.Queries.GetFoundDetails
             var entity = await _dbContext.Founders
                 .AsNoTracking()
                 .Include(f => f.LegalEntities)
-                .Include(IE => IE.IndividualEntrepreneur)
+                .Include(f => f.IndividualEntrepreneur)
                 .FirstOrDefaultAsync
                 (founder =>founder.Id == request.Id, cancellationToken);
 

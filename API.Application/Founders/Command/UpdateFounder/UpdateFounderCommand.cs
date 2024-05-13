@@ -11,6 +11,8 @@ namespace API.Application.Founders.Command.UpdateFounder
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
+
+        public Guid? IndividualEntrepreneurId { get; set; }
         public List<Guid>? LegalEntityIds { get; set; }
     }
 }

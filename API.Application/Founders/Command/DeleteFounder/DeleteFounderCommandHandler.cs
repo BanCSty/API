@@ -40,13 +40,19 @@ namespace API.Application.Founders.Command.DeleteFounder
             CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Founders
-                .Include(f => f.LegalEntities)
+                //.Include(f => f.LegalEntities)
                 .FirstOrDefaultAsync(f => f.Id == request.FounderId, cancellationToken);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Founder), request.FounderId);
             }
+
+            //Подгружаем Юр. лица
+            _dbContext.Entry(entity).Collection(a => a.LegalEntities).Load();
+
+            //Подгружаем ИП
+            _dbContext.Entry(entity).Collection(a => a.LegalEntities).Load();
 
             // Удаление всех связанных записей LegalEntity
             _dbContext.LegalEntitys.RemoveRange(entity.LegalEntities);
