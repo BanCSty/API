@@ -2,6 +2,9 @@ using API.Application;
 using API.Application.Common.Mappings;
 using API.Application.Interfaces;
 using API.DAL;
+using API.DAL.Interfaces;
+using API.DAL.Repositories;
+using API.Domain;
 using API.WebApi.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +38,9 @@ namespace API.WebApi
             services.AddPersistence(Configuration);
             services.AddControllers();
 
+            services.AddScoped<IBaseRepository<Founder>, FounderRepository>();
+            services.AddScoped<IBaseRepository<LegalEntity>, LegalEntityRepository>();
+            services.AddScoped<IBaseRepository<IndividualEntrepreneur>, IndividualEntrepreneurRepository>();
 
             services.AddVersionedApiExplorer(options =>
                 options.GroupNameFormat = "'v'VVV");
