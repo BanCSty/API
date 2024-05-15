@@ -26,6 +26,8 @@ namespace API.Application.Founders.Queries.GetFounderList
         {
             var entity = await _dbContext.Founders
                 .AsNoTracking()
+                //автоматически применяет правила маппинга, определенные в конфигурации AutoMapper,
+                //для преобразования объектов типа Founder в объекты типа FounderLookUpDto.
                 .ProjectTo<FounderLookUpDto>(_mapper.ConfigurationProvider)//Проецирует коллекцию в соотв. с конфигур
                 .ToListAsync(cancellationToken);
 

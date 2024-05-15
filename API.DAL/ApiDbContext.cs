@@ -2,6 +2,9 @@
 using API.DAL.EntityTypeConfigurations;
 using API.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace API.DAL
 {
@@ -21,6 +24,11 @@ namespace API.DAL
             builder.ApplyConfiguration(new IndividualEntrepreneurConfiguration());
             builder.ApplyConfiguration(new LegalEntityConfiguration());
             base.OnModelCreating(builder);
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            return await Database.BeginTransactionAsync(cancellationToken);
         }
     }
 }

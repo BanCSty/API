@@ -1,6 +1,7 @@
 ﻿using API.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,5 +15,7 @@ namespace API.Application.Interfaces
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
+
+        Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
     }
 }

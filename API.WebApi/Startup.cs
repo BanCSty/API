@@ -3,7 +3,6 @@ using API.Application.Common.Mappings;
 using API.Application.Interfaces;
 using API.DAL;
 using API.WebApi.Middleware;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,8 +10,6 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.IO;
 using System.Reflection;
@@ -58,8 +55,6 @@ namespace API.WebApi
                 config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
                 config.AddProfile(new AssemblyMappingProfile(typeof(IApiDbContext).Assembly));
             });
-
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
