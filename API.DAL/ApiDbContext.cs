@@ -1,4 +1,4 @@
-﻿using API.Application.Interfaces;
+﻿
 using API.DAL.EntityTypeConfigurations;
 using API.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace API.DAL
 {
-    public class ApiDbContext : DbContext, IApiDbContext
+    public class ApiDbContext : DbContext
     {
         public DbSet<Founder> Founders { get; set; }
         public DbSet<LegalEntity> LegalEntitys { get ; set ; }

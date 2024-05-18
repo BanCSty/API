@@ -1,4 +1,6 @@
-﻿using API.Application.Interfaces;
+﻿using API.DAL.Interfaces;
+using API.DAL.Repositories;
+using API.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +18,11 @@ namespace API.DAL
             {
                 options.UseSqlite(connectionString);
             });
-            service.AddScoped<IApiDbContext>(provider =>
-                provider.GetService<ApiDbContext>());
+
+            service.AddScoped<IBaseRepository<Founder>, FounderRepository>();
+            service.AddScoped<IBaseRepository<LegalEntity>, LegalEntityRepository>();
+            service.AddScoped<IBaseRepository<IndividualEntrepreneur>, IndividualEntrepreneurRepository>();
+            service.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return service;
         }

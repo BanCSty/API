@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\API.Application\API.Application.csproj" />
     <ProjectReference Include="..\API.Domain\API.Domain.csproj" />
   </ItemGroup>
 
