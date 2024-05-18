@@ -1,5 +1,5 @@
 ﻿using API.Application.Common.Exceptions;
-using API.Application.Interfaces;
+using API.DAL.Interfaces;
 using API.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +11,23 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
     public class DeleteIECommandHandler
         : IRequestHandler<DeleteIECommand>
     {
-        private readonly IApiDbContext _dbContext;
+        private readonly IBaseRepository<IndividualEntrepreneur> _IERepository;
+        private readonly IBaseRepository<Founder> _founderRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteIECommandHandler(IApiDbContext dbContext)
+        public DeleteIECommandHandler(IBaseRepository<IndividualEntrepreneur> IERepository, 
+            IBaseRepository<Founder> founderRepository,
+            IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _IERepository = IERepository;
+            _founderRepository = founderRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Unit> Handle(DeleteIECommand request, CancellationToken cancellationToken)
         {
             // Находим IndividualEntrepreneur по Id запроса
-            var entity = await _dbContext.IndividualEntrepreneurs
+            var entity = await _IERepository.Select()
                 .FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
 
             if (entity == null)
@@ -29,24 +35,34 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
 
-            _dbContext.Entry(entity).Reference(IE => IE.Founder).Load();
+            _IERepository.Entry(entity).Reference(IE => IE.Founder).Load();
 
             // Находим учредителя, связанного с IndividualEntrepreneurId
-            var founder = await _dbContext.Founders
+            var founder = await _founderRepository.Select()
                 .Include(f => f.IndividualEntrepreneur)
                 .SingleOrDefaultAsync(f => f.Id == entity.FounderId, cancellationToken);
 
-            //Если есть учредитель связанный с этим ИП, то это поле в таблице учредителей будет null
-            if (founder != null)
-                founder.IndividualEntrepreneur = null;
+            //Начало транзации удаления ИП и связанной с ним поля сущности у учредители
+            using (var transaction = _unitOfWork.BeginTransactionAsync(cancellationToken))
+            {
+                try
+                {
+                    //Если есть учредитель связанный с этим ИП, то это поле в таблице учредителей будет null
+                    if (founder != null)
+                        founder.IndividualEntrepreneur = null;
 
-            // Удаляем IndividualEntrepreneur
-            _dbContext.IndividualEntrepreneurs.Remove(entity);
+                    // Удаляем IndividualEntrepreneur
+                    await _IERepository.Delete(entity.Id, cancellationToken);
 
-            // Сохраняем изменения в базе данных
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            // Возвращаем пустой ответ
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    await _unitOfWork.CommitTransactionAsync();                    
+                }
+                catch (System.Exception)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    throw;
+                }
+            }
             return Unit.Value;
         }
     }

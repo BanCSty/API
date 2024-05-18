@@ -1,5 +1,5 @@
 ﻿using API.Application.Common.Exceptions;
-using API.Application.Interfaces;
+using API.DAL.Interfaces;
 using API.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +12,24 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
     public class CreateIECommandHandler
         : IRequestHandler<CreateIECommand, Guid>
     {
-        private readonly IApiDbContext _dbContext;
+        private readonly IBaseRepository<IndividualEntrepreneur> _IERepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBaseRepository<Founder> _founderRepository;
 
-        public CreateIECommandHandler(IApiDbContext dbContext)
+        public CreateIECommandHandler(IBaseRepository<IndividualEntrepreneur> IERepository, 
+            IBaseRepository<Founder> founderRepository,
+            IUnitOfWork unitOfWork
+            )
         {
-            _dbContext = dbContext;
+            _IERepository = IERepository;
+            _founderRepository = founderRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(CreateIECommand request, CancellationToken cancellationToken)
         {
             //Получим сущность ИП по ИНН
-            var IeInnExists = await _dbContext.IndividualEntrepreneurs
+            var IeInnExists = await _IERepository.Select()
                 .FirstOrDefaultAsync(IE => IE.INN == request.INN, cancellationToken);
             //Если Founder INN уже существует, то выбрасываем исключение.
             //Для предотвращения данных ИП с одинаковыми ИНН
@@ -30,14 +37,13 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
                 throw new ArgumentException($"INN: {request.INN} already used");
 
             // Находим учредителя по его Id
-            var founder = await _dbContext.Founders.FindAsync(request.FounderId);
+            var founder = await _founderRepository.Select()
+                .Include(f => f.IndividualEntrepreneur)
+                .FirstOrDefaultAsync(f => f.Id == request.FounderId);
             if (founder == null)
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.FounderId);
             }
-
-            //Подгрузим ИП учредителя(если есть)
-            _dbContext.Entry(founder).Reference(f => f.IndividualEntrepreneur).Load();
 
             // Создаем нового индивидуального предпринимателя
             var individualEntrepreneur = new IndividualEntrepreneur
@@ -47,21 +53,40 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
                 Name = request.Name,
                 DateCreate = DateTime.Now,
                 DateUpdate = null,
-            };
+                FounderId = request.FounderId
+            };  
 
-            // Добавляем созданного индивидуального предпринимателя к учредителю
-            founder.IndividualEntrepreneur = individualEntrepreneur;
 
-            //добавляем учредителя к индивидуальному предпринимателю 
-            individualEntrepreneur.Founder = founder;
+            using (var transaction = _unitOfWork.BeginTransactionAsync(cancellationToken))
+            {
+                try
+                {
+                    if (founder == null || founder.IndividualEntrepreneur != null)
+                        throw new ArgumentException($"Founder {founder.Id} already has an individual entrepreneur");                      
 
-            // Добавляем индивидуального предпринимателя в контекст базы данных
-            await _dbContext.IndividualEntrepreneurs.AddAsync(individualEntrepreneur);
+                    //добавляем учредителя к индивидуальному предпринимателю 
+                    individualEntrepreneur.Founder = founder;
 
-            // Сохраняем изменения в базе данных
-            await _dbContext.SaveChangesAsync(cancellationToken);
+                    // Создаем индивидуального предпринимателя
+                    await _IERepository.Create(individualEntrepreneur, cancellationToken);
 
-            // Возвращаем Id нового индивидуального предпринимателя
+                    // Добавляем созданного индивидуального предпринимателя к учредителю
+                    founder.IndividualEntrepreneur = individualEntrepreneur;
+
+                    // Сохраняем изменения и завершаем транзакцию
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    await _unitOfWork.CommitTransactionAsync();
+
+                }
+                catch (Exception)
+                {
+                    // Откатываем транзакцию в случае ошибки
+                    await _unitOfWork.RollbackTransactionAsync();
+                    throw;
+                }
+            }
+
+            // Возвращаем Id созданного индивидуального предпринимателя
             return individualEntrepreneur.Id;
         }
     }
