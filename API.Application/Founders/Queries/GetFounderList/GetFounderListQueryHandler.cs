@@ -1,6 +1,5 @@
-﻿using API.Application.Interfaces;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using API.DAL.Interfaces;
+using API.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -12,26 +11,26 @@ namespace API.Application.Founders.Queries.GetFounderList
     public class GetFounderListQueryHandler
         : IRequestHandler<GetFounderListQuery, FounderListVm>
     {
-        private readonly IApiDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly IBaseRepository<Founder> _founderRepository;
 
-        public GetFounderListQueryHandler(IApiDbContext dbContext, IMapper mapper)
+        public GetFounderListQueryHandler(IBaseRepository<Founder> founderRepository)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _founderRepository = founderRepository;
         }
 
         public async Task<FounderListVm> Handle(GetFounderListQuery request,
             CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.Founders
+            var founderEntitys = await _founderRepository.Select()
+                .Include(f => f.LegalEntities)
+                .Include(f => f.IndividualEntrepreneur)
                 .AsNoTracking()
-                //автоматически применяет правила маппинга, определенные в конфигурации AutoMapper,
-                //для преобразования объектов типа Founder в объекты типа FounderLookUpDto.
-                .ProjectTo<FounderLookUpDto>(_mapper.ConfigurationProvider)//Проецирует коллекцию в соотв. с конфигур
                 .ToListAsync(cancellationToken);
 
-            return _mapper.Map<FounderListVm>(entity);
+            var founderLookUpDtos = founderEntitys.Select(founder => new FounderLookUpDto(founder)).ToList();
+            var founderListVm = new FounderListVm(founderLookUpDtos);
+
+            return founderListVm;
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using API.Application.Common.Exceptions;
-using API.Application.Interfaces;
+using API.DAL.Interfaces;
 using API.Domain;
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,31 +11,30 @@ namespace API.Application.Founders.Queries.GetFoundDetails
     public class GetFounderDetailsQueryHandler
         : IRequestHandler<GetFounderDetailsQuery, FounderDetailsVm>
     {
-        private readonly IApiDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly IBaseRepository<Founder> _founderRepository;
 
-        public GetFounderDetailsQueryHandler(IApiDbContext dbContext, IMapper mapper)
+        public GetFounderDetailsQueryHandler(IBaseRepository<Founder> founderRepository)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _founderRepository = founderRepository;
         }
 
         public async Task<FounderDetailsVm> Handle(GetFounderDetailsQuery request,
             CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.Founders
-                .AsNoTracking()
+            var founderEntity = await _founderRepository.Select()
                 .Include(f => f.LegalEntities)
                 .Include(f => f.IndividualEntrepreneur)
-                .FirstOrDefaultAsync
-                (founder =>founder.Id == request.Id, cancellationToken);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.Id == request.Id, cancellationToken);
 
-            if (entity == null || entity.Id != request.Id)
+            if (founderEntity == null || founderEntity.Id != request.Id)
             {
                 throw new NotFoundException(nameof(Founder), request.Id);
             }
 
-            return _mapper.Map<FounderDetailsVm>(entity);
+            var founderDetails = new FounderDetailsVm(founderEntity);
+
+            return founderDetails;
         }
     }
 }

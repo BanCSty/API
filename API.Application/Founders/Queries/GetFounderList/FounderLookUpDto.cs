@@ -1,62 +1,54 @@
-﻿using API.Application.Common.Mappings;
-using API.Application.DTO;
+﻿using API.Application.ViewModel;
 using API.Domain;
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace API.Application.Founders.Queries.GetFounderList
 {
-    public class FounderLookUpDto : IMapWith<Founder>
+    public class FounderLookUpDto
     {
+        public FounderLookUpDto(Founder founder)
+        {
+            Id = founder.Id;
+            INN = founder.INN;
+            FirstName = founder.FirstName;
+            LastName = founder.LastName;
+            MiddleName = founder.MiddleName;
+            DateCreate = founder.DateCreate;
+            DateUpdate = founder.DateUpdate;
+
+
+            individualEntrepreneurs = founder.IndividualEntrepreneur != null
+                ? new IndividualEntrepreneursVm
+                {
+                    Id = founder.IndividualEntrepreneur.Id,
+                    Name = founder.IndividualEntrepreneur.Name,
+                    INN = founder.IndividualEntrepreneur.INN
+                }
+                : null;
+
+            LegalEntities = founder.LegalEntities != null && founder.LegalEntities.Any()
+                ? founder.LegalEntities.Select(LE => new LegalEntityVm
+                {
+                    Id = LE.Id,
+                    Name = LE.Name,
+                    INN = LE.INN
+                }).ToList()
+                : null;
+        }
+
+
         public Guid Id { get; set; }
-        public long INN { get; set; }
+        public string INN { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
         public DateTime DateCreate { get; set; }
-        public DateTime DateUpdate { get; set; }
+        public DateTime? DateUpdate { get; set; }
 
-        public List<LegalEntityDto> LegalEntities { get; set; }
+        public List<LegalEntityVm>? LegalEntities { get; set; }
 
-        public IndividualEntrepreneursDto individualEntrepreneurs { get; set; }
-
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<Founder, FounderLookUpDto>()
-                .ForMember(FounderVm => FounderVm.Id,
-                    opt => opt.MapFrom(founder => founder.Id))
-                .ForMember(FounderVm => FounderVm.INN,
-                    opt => opt.MapFrom(founder => founder.INN))
-                .ForMember(FounderVm => FounderVm.FirstName,
-                    opt => opt.MapFrom(founder => founder.FirstName))
-                .ForMember(FounderVm => FounderVm.LastName,
-                    opt => opt.MapFrom(founder => founder.LastName))
-                .ForMember(FounderVm => FounderVm.MiddleName,
-                    opt => opt.MapFrom(founder => founder.MiddleName))
-                .ForMember(FounderVm => FounderVm.DateCreate,
-                    opt => opt.MapFrom(founder => founder.DateCreate))
-                .ForMember(FounderVm => FounderVm.DateUpdate,
-                    opt => opt.MapFrom(founder => founder.DateUpdate))
-                .ForMember(FounderVm => FounderVm.LegalEntities,
-                    opt => opt.MapFrom(founder => founder.LegalEntities != null ?
-                        founder.LegalEntities.Select(le => new LegalEntityDto
-                        {
-                            Id = le.Id,
-                            INN = le.INN,
-                            Name = le.Name
-                        }) : null))
-                .ForMember(FounderVm => FounderVm.individualEntrepreneurs,
-                    opt => opt.MapFrom(f => f.IndividualEntrepreneur != null
-                        ? new IndividualEntrepreneursDto
-                        {
-                            Id = f.IndividualEntrepreneur.Id,
-                            INN = f.IndividualEntrepreneur.INN,
-                            Name = f.IndividualEntrepreneur.Name
-                        }
-                        : null));
-
-        }
+        public IndividualEntrepreneursVm? individualEntrepreneurs { get; set; }        
     }
 }

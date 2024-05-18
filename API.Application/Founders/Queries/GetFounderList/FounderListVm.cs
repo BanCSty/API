@@ -1,19 +1,19 @@
-﻿using API.Application.Common.Mappings;
-using API.Domain;
-using AutoMapper;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace API.Application.Founders.Queries.GetFounderList
 {
-    public class FounderListVm : IMapWith<List<FounderLookUpDto>>
+    public class FounderListVm
     {
         public IList<FounderLookUpDto> Founders { get; set; }
 
-
-        public void Mapping(Profile profile)
+        public FounderListVm(List<FounderLookUpDto> founders)
         {
-            profile.CreateMap<List<FounderLookUpDto>, FounderListVm>()
-                .ForMember(dest => dest.Founders, opt => opt.MapFrom(src => src));
+            Founders = founders;
+        }
+
+        public FounderListVm()
+        {
+            Founders = new List<FounderLookUpDto>();
         }
     }
 }
