@@ -1,8 +1,11 @@
 ﻿using API.DAL.Interfaces;
 using API.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,9 +34,9 @@ namespace API.DAL.Repositories
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<LegalEntity>> Select(CancellationToken cancellationToken)
-        {
-            return await _dbContext.LegalEntitys.ToListAsync(cancellationToken);
+        public IQueryable<LegalEntity> Select()
+        {          
+            return _dbContext.LegalEntitys.AsQueryable();
         }
 
         public async Task Update(LegalEntity entity, CancellationToken cancellationToken)
@@ -41,6 +44,16 @@ namespace API.DAL.Repositories
             _dbContext.LegalEntitys.Update(entity);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public EntityEntry<LegalEntity> Entry(LegalEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return _dbContext.Entry(entity);
         }
     }
 }

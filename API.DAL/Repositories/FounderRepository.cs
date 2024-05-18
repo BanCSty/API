@@ -1,10 +1,10 @@
 ﻿using API.DAL.Interfaces;
 using API.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +14,7 @@ namespace API.DAL.Repositories
     {
         private readonly ApiDbContext _dbContext;
 
-        public FounderRepository(ApiDbContext dbContext)
+        public FounderRepository(ApiDbContext dbContext) 
         {
             _dbContext = dbContext;
         }
@@ -34,15 +34,25 @@ namespace API.DAL.Repositories
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<Founder>> Select(CancellationToken cancellationToken)
+        public IQueryable<Founder> Select()
         {
-            return await _dbContext.Founders.ToListAsync(cancellationToken);
+            return _dbContext.Founders.AsQueryable();
         }
 
         public async Task Update(Founder entity, CancellationToken cancellationToken)
         {
             _dbContext.Update(entity);
             await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public EntityEntry<Founder> Entry(Founder entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            return _dbContext.Entry(entity);
         }
     }
 }
