@@ -1,8 +1,10 @@
 ﻿using API.Application.Common.Exceptions;
-using API.Application.Interfaces;
+using API.DAL.Interfaces;
 using API.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,42 +28,77 @@ namespace API.Application.Founders.Command.DeleteFounder
      * 
      */
 
-    public class DeleteFounderCommandHandler 
+    public class DeleteFounderCommandHandler
         : IRequestHandler<DeleteFounderCommand>
     {
-        private readonly IApiDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBaseRepository<Founder> _founderRepository;
+        private readonly IBaseRepository<LegalEntity> _LegalEntityRepository;
+        private readonly IBaseRepository<IndividualEntrepreneur> _IERepository;
 
-        public DeleteFounderCommandHandler(IApiDbContext dbContext)
+        public DeleteFounderCommandHandler(IBaseRepository<Founder> founderRepository, 
+            IBaseRepository<LegalEntity> LegalEntityRepository, 
+            IBaseRepository<IndividualEntrepreneur> IERepository,
+            IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _founderRepository = founderRepository;
+            _IERepository = IERepository;
+            _LegalEntityRepository = LegalEntityRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(DeleteFounderCommand request, 
+        public async Task<Unit> Handle(DeleteFounderCommand request,
             CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.Founders
-                //.Include(f => f.LegalEntities)
+            var founder = await _founderRepository.Select()
                 .FirstOrDefaultAsync(f => f.Id == request.FounderId, cancellationToken);
 
-            if (entity == null)
+            if (founder == null)
             {
                 throw new NotFoundException(nameof(Founder), request.FounderId);
             }
 
             //Подгружаем Юр. лица
-            _dbContext.Entry(entity).Collection(a => a.LegalEntities).Load();
+            _founderRepository.Entry(founder).Collection(a => a.LegalEntities).Load();
+
 
             //Подгружаем ИП
-            _dbContext.Entry(entity).Collection(a => a.LegalEntities).Load();
+            _founderRepository.Entry(founder).Reference(a => a.IndividualEntrepreneur).Load();
 
-            // Удаление всех связанных записей LegalEntity
-            _dbContext.LegalEntitys.RemoveRange(entity.LegalEntities);
 
-            // Удаление учредителя
-            _dbContext.Founders.Remove(entity);
+            var legalEntities = await _LegalEntityRepository.Select()
+                .Where(l => l.Founders.Any(f => f.Id == request.FounderId))
+                .ToListAsync(cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            using (var transaction = _unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (legalEntities != null)
+                    {
+                        foreach (var legalEntity in legalEntities)
+                        {
+                            // Удаляем учредителя из списка учредителей юридического лица
+                            legalEntity.Founders.Remove(founder);
+                        }
+                    }
 
+                    //Удаление ИП
+                    if (founder.IndividualEntrepreneur != null)
+                        await _IERepository.Delete(founder.IndividualEntrepreneur.Id, cancellationToken);
+
+                    // Удаление учредителя
+                    await _founderRepository.Delete(founder.Id, cancellationToken);
+
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    await _unitOfWork.CommitTransactionAsync();
+                }
+                catch (Exception)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    throw;
+                }
+            }
             return Unit.Value;
         }
     }
