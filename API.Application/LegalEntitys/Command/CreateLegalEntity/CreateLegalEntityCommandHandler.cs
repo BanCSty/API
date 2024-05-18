@@ -1,11 +1,9 @@
-﻿using API.Application.Interfaces;
+﻿using API.DAL.Interfaces;
 using API.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,17 +12,23 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
     public class CreateLegalEntityCommandHandler
         : IRequestHandler<CreateLegalEntityCommand, Guid>
     {
-        private readonly IApiDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBaseRepository<Founder> _founderRepository;
+        private readonly IBaseRepository<LegalEntity> _legaEntityRepository;
 
-        public CreateLegalEntityCommandHandler(IApiDbContext dbContext)
+        public CreateLegalEntityCommandHandler(IBaseRepository<LegalEntity> legaEntityRepository
+            , IBaseRepository<Founder> founderRepository,
+            IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _legaEntityRepository = legaEntityRepository;
+            _founderRepository = founderRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(CreateLegalEntityCommand request, CancellationToken cancellationToken)
         {
             //Полчить LegalEntity по ИНН
-            var LeInnExist = await _dbContext.LegalEntitys
+            var LeInnExist = await _legaEntityRepository.Select()
                 .FirstOrDefaultAsync(LE => LE.INN == request.INN, cancellationToken);
             //Если такое LegalEntity INN существует, то выбрасываем исключение
             if (LeInnExist != null)
@@ -40,25 +44,37 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
             };
 
             // Получить объекты учредителей на основе массива идентификаторов FounderIds
-            var founders = await _dbContext.Founders
+            var founders = await _founderRepository.Select()
                 .Include(f => f.LegalEntities)
                 .Where(f => request.FounderIds.Contains(f.Id))
                 .ToListAsync();
 
-            // Добавить учредителей к юридическому лицу
-            foreach (var founder in founders)
+            using (var transaction = _unitOfWork.BeginTransactionAsync())
             {
-                legalEntity.Founders.Add(founder);
-                founder.LegalEntities.Add(legalEntity);
+                try
+                {
+                    // Добавить учредителей к юридическому лицу и ЮЛ к учредителям
+                    foreach (var founder in founders)
+                    {
+                        legalEntity.Founders.Add(founder);
+                        founder.LegalEntities.Add(legalEntity);
+
+                        // Обновить состояние сущности
+                        _founderRepository.Entry(founder).State = EntityState.Modified;
+                    }
+
+                    // Добавить новое юридическое лицо в контекст данных
+                    await _legaEntityRepository.Create(legalEntity, cancellationToken);
+
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    await _unitOfWork.CommitTransactionAsync();
+                }
+                catch (Exception)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    throw;
+                }
             }
-
-            // Добавить новое юридическое лицо в контекст данных
-            await _dbContext.LegalEntitys.AddAsync(legalEntity);
-            _dbContext.Founders.UpdateRange(founders);
-
-            // Сохранить изменения в базе данных
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
             return legalEntity.Id;
         }
     }

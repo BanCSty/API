@@ -1,12 +1,8 @@
 ﻿using API.Application.Common.Exceptions;
-using API.Application.Interfaces;
+using API.DAL.Interfaces;
 using API.Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,40 +11,56 @@ namespace API.Application.LegalEntitys.Command.DeleteLegalEntity
     public class DeleteLegalEntityCommandHandler
         : IRequestHandler<DeleteLegalEntityCommand>
     {
-        private readonly IApiDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBaseRepository<Founder> _founderRepository;
+        private readonly IBaseRepository<LegalEntity> _legaEntityRepository;
 
-        public DeleteLegalEntityCommandHandler(IApiDbContext dbContext)
+        public DeleteLegalEntityCommandHandler(IBaseRepository<LegalEntity> legaEntityRepository
+            , IBaseRepository<Founder> founderRepository,
+            IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _legaEntityRepository = legaEntityRepository;
+            _founderRepository = founderRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Unit> Handle(DeleteLegalEntityCommand request,
             CancellationToken cancellationToken)
         {
             // Находим удаляемую сущность LegalEntity
-            var entity = await _dbContext.LegalEntitys
-                //.Include(le => le.Founders) // Включаем связанные учредители
+            var entity = await _legaEntityRepository.Select()
                 .FirstOrDefaultAsync(le => le.Id == request.Id, cancellationToken);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(LegalEntity), request.Id);
             }
-            
+
             //Подгружаем учредителей
-            _dbContext.Entry(entity).Collection(LE => LE.Founders).Load();
+            _legaEntityRepository.Entry(entity).Collection(LE => LE.Founders).Load();
 
-            // Удаляем ссылку на удаляемую сущность LegalEntity из каждой сущности Founder
-            foreach (var founder in entity.Founders)
+            using (var transaction = _unitOfWork.BeginTransactionAsync())
             {
-                founder.LegalEntities.Remove(entity);
+                try
+                {
+                    // Удаляем ссылку на удаляемую сущность LegalEntity из каждой сущности Founder
+                    foreach (var founder in entity.Founders)
+                    {
+                        founder.LegalEntities.Remove(entity);
+                    }
+
+                    // Удаляем саму сущность LegalEntity
+                    await _legaEntityRepository.Delete(entity.Id, cancellationToken);
+
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    await _unitOfWork.CommitTransactionAsync();
+                }
+                catch (System.Exception)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    throw;
+                }
             }
-
-            // Удаляем саму сущность LegalEntity
-            _dbContext.LegalEntitys.Remove(entity);
-
-            // Сохраняем изменения
-            await _dbContext.SaveChangesAsync(cancellationToken);
 
             // Возвращаем пустой ответ (для тестирования)
             return Unit.Value;
