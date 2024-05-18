@@ -1,10 +1,7 @@
-﻿using API.Application.Interfaces;
+﻿using API.DAL.Interfaces;
 using API.Domain;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,25 +11,25 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityList
     public class GetLegalEntityListQueryHandler
         : IRequestHandler<GetLegalEntityListQuery, LegalEntityListVm>
     {
-        private readonly IApiDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly IBaseRepository<LegalEntity> _legalEntityRepository;
 
-        public GetLegalEntityListQueryHandler(IApiDbContext dbContext,
-            IMapper mapper)
+        public GetLegalEntityListQueryHandler(IBaseRepository<LegalEntity> legalEntityRepository)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _legalEntityRepository = legalEntityRepository;
         }
 
         public async Task<LegalEntityListVm> Handle
             (GetLegalEntityListQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.LegalEntitys
+            var entity = await _legalEntityRepository.Select()
+                .Include(LE => LE.Founders)
                 .AsNoTracking()
-                .ProjectTo<LegalEntityLookUpDto>(_mapper.ConfigurationProvider)//Проецирует коллекцию в соотв. с конфигур
                 .ToListAsync(cancellationToken);
 
-            return _mapper.Map<LegalEntityListVm>(entity);
+            var legalEntityLookUp = entity.Select(LE => new LegalEntityLookUpDto(LE)).ToList();
+            var legalEntityListVm = new LegalEntityListVm(legalEntityLookUp);
+
+            return legalEntityListVm;
         }
     }
 }

@@ -1,20 +1,20 @@
-﻿
-using API.Application.Common.Mappings;
-using AutoMapper;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 
 namespace API.Application.LegalEntitys.Queries.GetLegalEntityList
 {
     //ViewModel
-    public class LegalEntityListVm : IMapWith<List<LegalEntityLookUpDto>>
+    public class LegalEntityListVm
     {
         public IList<LegalEntityLookUpDto> LegalEntitys { get; set; }
 
-        public void Mapping(Profile profile)
+        public LegalEntityListVm(List<LegalEntityLookUpDto> legalEntityLookUps)
         {
-            profile.CreateMap<List<LegalEntityLookUpDto>, LegalEntityListVm>()
-                .ForMember(dest => dest.LegalEntitys, opt => opt.MapFrom(src => src));
+            LegalEntitys = legalEntityLookUps;
+        }
+
+        public LegalEntityListVm()
+        {
+            LegalEntitys = new List<LegalEntityLookUpDto>();
         }
     }
 }
