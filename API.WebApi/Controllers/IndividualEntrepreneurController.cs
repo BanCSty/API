@@ -3,9 +3,6 @@ using API.Application.IndividualEntrepreneurs.Command.DeleteIE;
 using API.Application.IndividualEntrepreneurs.Command.UpdateIE;
 using API.Application.IndividualEntrepreneurs.Queries.GetIEDetails;
 using API.Application.IndividualEntrepreneurs.Queries.GetIEList;
-using API.WebApi.Models.IndividualEntrepreneur;
-using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,13 +16,6 @@ namespace API.WebApi.Controllers
     [Route("api/{version:apiVersion}/[controller]")]
     public class IndividualEntrepreneurController : BaseController
     {
-        public readonly IMapper _mapper;
-
-        public IndividualEntrepreneurController(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
-
         /// <summary>
         /// Gets the list of IndividualEntrepreneur
         /// </summary>
@@ -39,7 +29,7 @@ namespace API.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEListVm>> GetAll()
         {
-            //Сформируем запрос и с помощью Mediatotr отправим, затем результат вернем колиенту
+            //Сформируем запрос и с помощью Mediatotr
             var query = new GetIEListQuery();
 
             var vm = await Mediator.Send(query);
@@ -81,16 +71,14 @@ namespace API.WebApi.Controllers
         ///     Name: "IndividualEntrepreneur name"
         /// }
         /// </remarks>
-        /// <param name="createIEDto">createIEDto object</param>
+        /// <param name="createIECommand">CreateIECommand object</param>
         /// <returns>Returns id (guid)</returns>
         /// <response code="201">Success</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateIEDto createIEDto)
+        public async Task<ActionResult<Guid>> Create([FromBody] CreateIECommand createIECommand)
         {
-            var command = _mapper.Map<CreateIECommand>(createIEDto);
-            var IEId = await Mediator.Send(command);
-
+            var IEId = await Mediator.Send(createIECommand);
             return Ok(IEId);
         }
 
@@ -104,15 +92,14 @@ namespace API.WebApi.Controllers
         ///     name: "updated IndividualEntrepreneur name"
         /// }
         /// </remarks>
-        /// <param name="updateIEDto">updateIEDto object</param>
+        /// <param name="updateIECommand">UpdateIECommand object</param>
         /// <returns>Returns NoContent</returns>
         /// <response code="204">Success</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut]
-        public async Task<ActionResult<Guid>> Update([FromBody] UpdateIEDto updateIEDto)
+        public async Task<ActionResult<Guid>> Update([FromBody] UpdateIECommand updateIECommand)
         {
-            var command = _mapper.Map<UpdateIECommand>(updateIEDto);
-            await Mediator.Send(command);
+            await Mediator.Send(updateIECommand);
             return NoContent();
         }
 

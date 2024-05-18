@@ -3,10 +3,6 @@ using API.Application.Founders.Command.DeleteFounder;
 using API.Application.Founders.Command.UpdateFounder;
 using API.Application.Founders.Queries.GetFoundDetails;
 using API.Application.Founders.Queries.GetFounderList;
-using API.Domain;
-using API.WebApi.Models.Founders;
-using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,12 +16,7 @@ namespace API.WebApi.Controllers
     [Route("api/{version:apiVersion}/[controller]")]
     public class FounderController : BaseController
     {
-        private readonly IMapper _mapper;
-
-        public FounderController(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
+        
 
         /// <summary>
         /// Gets the list of founders
@@ -85,15 +76,14 @@ namespace API.WebApi.Controllers
         ///     MiddleName: "Founder MiddleName"
         /// }
         /// </remarks>
-        /// <param name="createFounderDto">createFounderDto object</param>
+        /// <param name="createFounderCommand">CreateFounderCommand object</param>
         /// <returns>Returns id (guid)</returns>
         /// <response code="201">Success</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateFounderDto createFounderDto)
+        public async Task<ActionResult<Guid>> Create([FromBody] CreateFounderCommand createFounderCommand)
         {
-            var command = _mapper.Map<CreateFounderCommand>(createFounderDto);
-            var founderId = await Mediator.Send(command);
+            var founderId = await Mediator.Send(createFounderCommand);
 
             return Ok(founderId);
         }
@@ -108,15 +98,14 @@ namespace API.WebApi.Controllers
         ///     name: "updated founder name"
         /// }
         /// </remarks>
-        /// <param name="updateFounderDto">updateFounderDto object</param>
+        /// <param name="updateFounderCommand">UpdateFounderCommand object</param>
         /// <returns>Returns NoContent</returns>
         /// <response code="204">Success</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut]
-        public async Task<ActionResult<Guid>> Update([FromBody] UpdateFounderDto updateFounderDto)
+        public async Task<ActionResult<Guid>> Update([FromBody] UpdateFounderCommand updateFounderCommand)
         {
-            var command = _mapper.Map<UpdateFounderCommand>(updateFounderDto);
-            await Mediator.Send(command);
+            await Mediator.Send(updateFounderCommand);
             return NoContent();
         }
 

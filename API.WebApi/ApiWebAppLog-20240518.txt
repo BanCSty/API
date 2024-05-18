@@ -1,0 +1,809 @@
+2024-05-18 00:56:48.567 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 00:56:48.955 +03:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2024-05-18 00:56:49.336 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-18 00:56:49.337 +03:00 [INF] Hosting environment: Development
+2024-05-18 00:56:49.337 +03:00 [INF] Content root path: C:\Users\Rax\source\repos\ClientAPI\API.WebApi
+2024-05-18 00:56:49.392 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/ - -
+2024-05-18 00:56:49.541 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/index.html - -
+2024-05-18 00:56:49.546 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/ - - - 301 - - 158.7889ms
+2024-05-18 00:56:49.685 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui.css - -
+2024-05-18 00:56:49.686 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui-bundle.js - -
+2024-05-18 00:56:49.698 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/index.html - - - 200 - text/html;charset=utf-8 156.6293ms
+2024-05-18 00:56:49.712 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui-standalone-preset.js - -
+2024-05-18 00:56:49.766 +03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2024-05-18 00:56:49.766 +03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2024-05-18 00:56:49.766 +03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2024-05-18 00:56:49.771 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui.css - - - 200 143212 text/css 84.0948ms
+2024-05-18 00:56:49.787 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui-standalone-preset.js - - - 200 332952 application/javascript 74.1835ms
+2024-05-18 00:56:49.832 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui-bundle.js - - - 200 1061588 application/javascript 145.8273ms
+2024-05-18 00:56:50.091 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger/v1/swagger.json - -
+2024-05-18 00:56:50.122 +03:00 [INF] Request starting HTTP/1.1 GET https://localhost:44397/swagger-ui-bundle.js.map - -
+2024-05-18 00:56:50.147 +03:00 [INF] Request starting HTTP/1.1 GET https://localhost:44397/swagger-ui-standalone-preset.js.map - -
+2024-05-18 00:56:50.170 +03:00 [INF] Request finished HTTP/1.1 GET https://localhost:44397/swagger-ui-standalone-preset.js.map - - - 404 - - 23.2245ms
+2024-05-18 00:56:50.170 +03:00 [INF] Request finished HTTP/1.1 GET https://localhost:44397/swagger-ui-bundle.js.map - - - 404 - - 48.0922ms
+2024-05-18 00:56:50.323 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 231.9301ms
+2024-05-18 00:56:54.930 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 00:56:54.940 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 00:56:54.964 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 00:56:54.993 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 00:56:55.347 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 00:56:55.368 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 00:56:55.392 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 422.8005ms
+2024-05-18 00:56:55.392 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 00:56:55.394 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 463.9076ms
+2024-05-18 00:57:18.260 +03:00 [INF] Request starting HTTP/2 POST https://localhost:44397/api/1/IndividualEntrepreneur application/json 87
+2024-05-18 00:57:18.261 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Create (API.WebApi)'
+2024-05-18 00:57:18.280 +03:00 [INF] Route matched with {action = "Create", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Create(API.Application.IndividualEntrepreneurs.Command.CreateIE.CreateIECommand) on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 00:57:18.377 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 00:57:18.402 +03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 00:57:18.411 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 00:57:18.643 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?'], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "IndividualEntrepreneurs"
+WHERE "Id" = @p0;
+SELECT changes();
+2024-05-18 00:57:18.653 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p1='?', @p2='?', @p3='?', @p4='?', @p5='?' (Size = 12), @p6='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "IndividualEntrepreneurs" ("Id", "DateCreate", "DateUpdate", "FounderId", "INN", "Name")
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6);
+2024-05-18 00:57:18.673 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p6='?', @p0='?', @p1='?', @p2='?' (Size = 3), @p3='?' (Size = 12), @p4='?' (Size = 5), @p5='?' (Size = 3)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Founders" SET "DateCreate" = @p0, "DateUpdate" = @p1, "FirstName" = @p2, "INN" = @p3, "LastName" = @p4, "MiddleName" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2024-05-18 00:57:18.707 +03:00 [INF] Executing OkObjectResult, writing value of type 'System.Guid'.
+2024-05-18 00:57:18.708 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.Create (API.WebApi) in 428.3082ms
+2024-05-18 00:57:18.708 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Create (API.WebApi)'
+2024-05-18 00:57:18.709 +03:00 [INF] Request finished HTTP/2 POST https://localhost:44397/api/1/IndividualEntrepreneur application/json 87 - 200 - application/json;+charset=utf-8 451.4778ms
+2024-05-18 00:57:27.190 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 00:57:27.190 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 00:57:27.193 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 00:57:27.196 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 00:57:27.207 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 00:57:27.211 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 00:57:27.215 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 21.6068ms
+2024-05-18 00:57:27.215 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 00:57:27.215 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 25.2362ms
+2024-05-18 00:57:40.949 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 00:57:40.949 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 00:57:40.949 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 00:57:40.950 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 00:57:40.955 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 00:57:40.960 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 00:57:40.963 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 13.5722ms
+2024-05-18 00:57:40.963 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 00:57:40.963 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 14.4987ms
+2024-05-18 01:55:35.627 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:55:35.899 +03:00 [INF] Executed DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2024-05-18 01:55:36.165 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-18 01:55:36.166 +03:00 [INF] Hosting environment: Development
+2024-05-18 01:55:36.166 +03:00 [INF] Content root path: C:\Users\Rax\source\repos\ClientAPI\API.WebApi
+2024-05-18 01:55:36.207 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/ - -
+2024-05-18 01:55:36.305 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/index.html - -
+2024-05-18 01:55:36.315 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/ - - - 301 - - 111.4059ms
+2024-05-18 01:55:36.415 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/index.html - - - 200 - text/html;charset=utf-8 110.7493ms
+2024-05-18 01:55:36.434 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui-bundle.js - -
+2024-05-18 01:55:36.435 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui.css - -
+2024-05-18 01:55:36.438 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui-standalone-preset.js - -
+2024-05-18 01:55:36.481 +03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2024-05-18 01:55:36.481 +03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2024-05-18 01:55:36.481 +03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2024-05-18 01:55:36.486 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui.css - - - 200 143212 text/css 49.8424ms
+2024-05-18 01:55:36.506 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui-standalone-preset.js - - - 200 332952 application/javascript 67.4066ms
+2024-05-18 01:55:36.524 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui-bundle.js - - - 200 1061588 application/javascript 90.1734ms
+2024-05-18 01:55:36.694 +03:00 [INF] Request starting HTTP/1.1 GET https://localhost:44397/swagger-ui-bundle.js.map - -
+2024-05-18 01:55:36.729 +03:00 [INF] Request starting HTTP/1.1 GET https://localhost:44397/swagger-ui-standalone-preset.js.map - -
+2024-05-18 01:55:36.735 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger/v1/swagger.json - -
+2024-05-18 01:55:36.772 +03:00 [INF] Request finished HTTP/1.1 GET https://localhost:44397/swagger-ui-bundle.js.map - - - 404 - - 78.0934ms
+2024-05-18 01:55:36.774 +03:00 [INF] Request finished HTTP/1.1 GET https://localhost:44397/swagger-ui-standalone-preset.js.map - - - 404 - - 45.8026ms
+2024-05-18 01:55:36.935 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 199.2775ms
+2024-05-18 01:55:40.575 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 01:55:40.588 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 01:55:40.612 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 01:55:40.641 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:55:41.000 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 01:55:41.027 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 01:55:41.052 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 435.1759ms
+2024-05-18 01:55:41.052 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 01:55:41.054 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 479.0343ms
+2024-05-18 01:56:02.910 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 01:56:02.915 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 01:56:02.930 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 01:56:02.967 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:56:02.981 +03:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 01:56:02.985 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 01:56:02.988 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 58.2729ms
+2024-05-18 01:56:02.988 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 01:56:02.988 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 78.5300ms
+2024-05-18 01:56:31.710 +03:00 [INF] Request starting HTTP/2 PUT https://localhost:44397/api/1/IndividualEntrepreneur application/json 133
+2024-05-18 01:56:31.710 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi)'
+2024-05-18 01:56:31.721 +03:00 [INF] Route matched with {action = "Update", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Update(API.Application.IndividualEntrepreneurs.Command.UpdateIE.UpdateIECommand) on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 01:56:31.792 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:56:31.818 +03:00 [INF] Executed DbCommand (8ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 01:56:31.828 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_Id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."Id" = @__request_Id_0
+LIMIT 1
+2024-05-18 01:56:31.929 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__get_Item_0
+2024-05-18 01:56:31.963 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 01:56:32.139 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi) in 417.3805ms
+2024-05-18 01:56:32.139 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi)'
+2024-05-18 01:56:32.160 +03:00 [INF] Request finished HTTP/2 PUT https://localhost:44397/api/1/IndividualEntrepreneur application/json 133 - 500 - aplication/json 451.9407ms
+2024-05-18 01:57:14.022 +03:00 [INF] Request starting HTTP/2 POST https://localhost:44397/api/1/Founder application/json 78
+2024-05-18 01:57:14.025 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.Create (API.WebApi)'
+2024-05-18 01:57:14.028 +03:00 [INF] Route matched with {action = "Create", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Create(API.Application.Founders.Command.CreateFounder.CreateFounderCommand) on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 01:57:14.052 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:57:14.061 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 01:57:14.159 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?', @p1='?', @p2='?', @p3='?' (Size = 3), @p4='?' (Size = 12), @p5='?' (Size = 5), @p6='?' (Size = 3)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Founders" ("Id", "DateCreate", "DateUpdate", "FirstName", "INN", "LastName", "MiddleName")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2024-05-18 01:57:14.178 +03:00 [INF] Executing OkObjectResult, writing value of type 'System.Guid'.
+2024-05-18 01:57:14.179 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.Create (API.WebApi) in 150.9218ms
+2024-05-18 01:57:14.179 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.Create (API.WebApi)'
+2024-05-18 01:57:14.180 +03:00 [INF] Request finished HTTP/2 POST https://localhost:44397/api/1/Founder application/json 78 - 200 - application/json;+charset=utf-8 157.7936ms
+2024-05-18 01:57:26.088 +03:00 [INF] Request starting HTTP/2 PUT https://localhost:44397/api/1/IndividualEntrepreneur application/json 133
+2024-05-18 01:57:26.088 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi)'
+2024-05-18 01:57:26.088 +03:00 [INF] Route matched with {action = "Update", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Update(API.Application.IndividualEntrepreneurs.Command.UpdateIE.UpdateIECommand) on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 01:57:26.090 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:57:26.098 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 01:57:26.101 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_Id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."Id" = @__request_Id_0
+LIMIT 1
+2024-05-18 01:57:26.108 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__get_Item_0
+2024-05-18 01:57:26.114 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 01:57:26.144 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p4='?', @p0='?', @p1='?', @p2='?' (Size = 12), @p3='?' (Size = 6)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "IndividualEntrepreneurs" SET "DateUpdate" = @p0, "FounderId" = @p1, "INN" = @p2, "Name" = @p3
+WHERE "Id" = @p4;
+SELECT changes();
+2024-05-18 01:57:26.159 +03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2024-05-18 01:57:26.159 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi) in 70.8738ms
+2024-05-18 01:57:26.159 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi)'
+2024-05-18 01:57:26.160 +03:00 [INF] Request finished HTTP/2 PUT https://localhost:44397/api/1/IndividualEntrepreneur application/json 133 - 204 - - 71.7011ms
+2024-05-18 01:57:37.289 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 01:57:37.290 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 01:57:37.290 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 01:57:37.291 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:57:37.293 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 01:57:37.294 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 01:57:37.304 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 13.7406ms
+2024-05-18 01:57:37.308 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 01:57:37.309 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 19.3222ms
+2024-05-18 01:57:59.395 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 01:57:59.420 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 01:57:59.421 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 01:57:59.424 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 01:57:59.428 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 01:57:59.432 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 01:57:59.433 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 12.1545ms
+2024-05-18 01:57:59.434 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 01:57:59.438 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 43.1354ms
+2024-05-18 02:26:20.369 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:26:20.635 +03:00 [INF] Executed DbCommand (27ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2024-05-18 02:26:20.908 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-18 02:26:20.908 +03:00 [INF] Hosting environment: Development
+2024-05-18 02:26:20.908 +03:00 [INF] Content root path: C:\Users\Rax\source\repos\ClientAPI\API.WebApi
+2024-05-18 02:26:20.943 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/ - -
+2024-05-18 02:26:21.035 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/index.html - -
+2024-05-18 02:26:21.040 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/ - - - 301 - - 98.7151ms
+2024-05-18 02:26:21.147 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/index.html - - - 200 - text/html;charset=utf-8 111.6323ms
+2024-05-18 02:26:21.162 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui.css - -
+2024-05-18 02:26:21.162 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui-bundle.js - -
+2024-05-18 02:26:21.162 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger-ui-standalone-preset.js - -
+2024-05-18 02:26:21.210 +03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2024-05-18 02:26:21.210 +03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2024-05-18 02:26:21.210 +03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2024-05-18 02:26:21.213 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui.css - - - 200 143212 text/css 50.7533ms
+2024-05-18 02:26:21.220 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui-standalone-preset.js - - - 200 332952 application/javascript 55.6454ms
+2024-05-18 02:26:21.245 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger-ui-bundle.js - - - 200 1061588 application/javascript 81.9784ms
+2024-05-18 02:26:21.417 +03:00 [INF] Request starting HTTP/1.1 GET https://localhost:44397/swagger-ui-bundle.js.map - -
+2024-05-18 02:26:21.424 +03:00 [INF] Request starting HTTP/1.1 GET https://localhost:44397/swagger-ui-standalone-preset.js.map - -
+2024-05-18 02:26:21.450 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/swagger/v1/swagger.json - -
+2024-05-18 02:26:21.490 +03:00 [INF] Request finished HTTP/1.1 GET https://localhost:44397/swagger-ui-standalone-preset.js.map - - - 404 - - 66.1364ms
+2024-05-18 02:26:21.491 +03:00 [INF] Request finished HTTP/1.1 GET https://localhost:44397/swagger-ui-bundle.js.map - - - 404 - - 73.3633ms
+2024-05-18 02:26:21.654 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 204.5752ms
+2024-05-18 02:26:47.840 +03:00 [INF] Request starting HTTP/2 POST https://localhost:44397/api/1/Founder application/json 76
+2024-05-18 02:26:47.853 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.Create (API.WebApi)'
+2024-05-18 02:26:47.886 +03:00 [INF] Route matched with {action = "Create", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Create(API.Application.Founders.Command.CreateFounder.CreateFounderCommand) on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:26:47.995 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:26:48.233 +03:00 [INF] Executed DbCommand (10ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 02:26:48.410 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?', @p1='?', @p2='?', @p3='?' (Size = 4), @p4='?' (Size = 12), @p5='?' (Size = 4), @p6='?' (Size = 1)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Founders" ("Id", "DateCreate", "DateUpdate", "FirstName", "INN", "LastName", "MiddleName")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+2024-05-18 02:26:48.432 +03:00 [INF] Executing OkObjectResult, writing value of type 'System.Guid'.
+2024-05-18 02:26:48.443 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.Create (API.WebApi) in 552.4925ms
+2024-05-18 02:26:48.443 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.Create (API.WebApi)'
+2024-05-18 02:26:48.445 +03:00 [INF] Request finished HTTP/2 POST https://localhost:44397/api/1/Founder application/json 76 - 200 - application/json;+charset=utf-8 605.4834ms
+2024-05-18 02:27:12.192 +03:00 [INF] Request starting HTTP/2 POST https://localhost:44397/api/1/LegalEntity application/json 93
+2024-05-18 02:27:12.196 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.LegalEntityController.Create (API.WebApi)'
+2024-05-18 02:27:12.202 +03:00 [INF] Route matched with {action = "Create", controller = "LegalEntity"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Create(API.Application.LegalEntitys.Command.CreateLegalEntity.CreateLegalEntityCommand) on controller API.WebApi.Controllers.LegalEntityController (API.WebApi).
+2024-05-18 02:27:12.255 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:27:12.262 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name"
+FROM "LegalEntitys" AS "l"
+WHERE "l"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 02:27:12.411 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "t"."LegalEntityId", "t"."FounderId", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN (
+    SELECT "l"."LegalEntityId", "l"."FounderId", "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+WHERE "f"."Id" = 'A05BD23C-0918-4E6E-9B42-97D172E8F9BB'
+ORDER BY "f"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:27:12.479 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p6='?', @p0='?', @p1='?', @p2='?' (Size = 4), @p3='?' (Size = 12), @p4='?' (Size = 4), @p5='?' (Size = 1)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Founders" SET "DateCreate" = @p0, "DateUpdate" = @p1, "FirstName" = @p2, "INN" = @p3, "LastName" = @p4, "MiddleName" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2024-05-18 02:27:12.482 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?', @p1='?', @p2='?', @p3='?' (Size = 12), @p4='?' (Size = 7)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "LegalEntitys" ("Id", "DateCreate", "DateUpdate", "INN", "Name")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2024-05-18 02:27:12.482 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p5='?', @p6='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "LegalEntityFounder" ("FounderId", "LegalEntityId")
+VALUES (@p5, @p6);
+2024-05-18 02:27:12.492 +03:00 [INF] Executing OkObjectResult, writing value of type 'System.Guid'.
+2024-05-18 02:27:12.492 +03:00 [INF] Executed action API.WebApi.Controllers.LegalEntityController.Create (API.WebApi) in 290.0281ms
+2024-05-18 02:27:12.492 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.LegalEntityController.Create (API.WebApi)'
+2024-05-18 02:27:12.493 +03:00 [INF] Request finished HTTP/2 POST https://localhost:44397/api/1/LegalEntity application/json 93 - 200 - application/json;+charset=utf-8 300.7747ms
+2024-05-18 02:27:20.633 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:27:20.633 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:27:20.637 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:27:20.654 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:27:20.675 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:27:20.682 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:27:20.697 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 60.5745ms
+2024-05-18 02:27:20.698 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:27:20.698 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 64.7830ms
+2024-05-18 02:27:46.321 +03:00 [INF] Request starting HTTP/2 DELETE https://localhost:44397/api/1/Founder/24b5b2a0-b124-41b3-bc6f-a67dff23b3ad - -
+2024-05-18 02:27:46.322 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.Delete (API.WebApi)'
+2024-05-18 02:27:46.328 +03:00 [INF] Route matched with {action = "Delete", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Delete(System.Guid) on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:27:46.355 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:27:46.360 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 02:27:46.411 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "f"."Id", "t"."LegalEntityId", "t"."FounderId", "t0"."LegalEntityId", "t0"."FounderId", "t0"."Id", "t0"."DateCreate", "t0"."DateUpdate", "t0"."FirstName", "t0"."INN", "t0"."LastName", "t0"."MiddleName"
+FROM "Founders" AS "f"
+INNER JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+LEFT JOIN (
+    SELECT "l1"."LegalEntityId", "l1"."FounderId", "f0"."Id", "f0"."DateCreate", "f0"."DateUpdate", "f0"."FirstName", "f0"."INN", "f0"."LastName", "f0"."MiddleName"
+    FROM "LegalEntityFounder" AS "l1"
+    INNER JOIN "Founders" AS "f0" ON "l1"."FounderId" = "f0"."Id"
+    WHERE "f0"."Id" = @__get_Item_0
+) AS "t0" ON "t"."Id" = "t0"."LegalEntityId"
+WHERE "f"."Id" = @__get_Item_0
+ORDER BY "f"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id", "t0"."LegalEntityId", "t0"."FounderId", "t0"."Id"
+2024-05-18 02:27:46.421 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."FounderId" = @__get_Item_0
+2024-05-18 02:27:46.437 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name"
+FROM "LegalEntitys" AS "l"
+WHERE EXISTS (
+    SELECT 1
+    FROM "LegalEntityFounder" AS "l0"
+    INNER JOIN "Founders" AS "f" ON "l0"."FounderId" = "f"."Id"
+    WHERE ("l"."Id" = "l0"."LegalEntityId") AND ("f"."Id" = @__request_FounderId_0))
+2024-05-18 02:27:46.448 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__id_0
+LIMIT 1
+2024-05-18 02:27:46.456 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?'], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "Founders"
+WHERE "Id" = @p0;
+SELECT changes();
+2024-05-18 02:27:46.469 +03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2024-05-18 02:27:46.469 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.Delete (API.WebApi) in 141.1872ms
+2024-05-18 02:27:46.469 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.Delete (API.WebApi)'
+2024-05-18 02:27:46.470 +03:00 [INF] Request finished HTTP/2 DELETE https://localhost:44397/api/1/Founder/24b5b2a0-b124-41b3-bc6f-a67dff23b3ad - - - 204 - - 148.2551ms
+2024-05-18 02:27:52.902 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:27:52.902 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:27:52.903 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:27:52.903 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:27:52.908 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:27:52.910 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:27:52.911 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 7.9444ms
+2024-05-18 02:27:52.911 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:27:52.911 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 8.7876ms
+2024-05-18 02:28:09.835 +03:00 [INF] Request starting HTTP/2 DELETE https://localhost:44397/api/1/Founder/b9fd9992-ada2-40db-be77-ba71dd16f083 - -
+2024-05-18 02:28:09.836 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.Delete (API.WebApi)'
+2024-05-18 02:28:09.836 +03:00 [INF] Route matched with {action = "Delete", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Delete(System.Guid) on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:28:09.837 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:28:09.843 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 02:28:09.849 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "f"."Id", "t"."LegalEntityId", "t"."FounderId", "t0"."LegalEntityId", "t0"."FounderId", "t0"."Id", "t0"."DateCreate", "t0"."DateUpdate", "t0"."FirstName", "t0"."INN", "t0"."LastName", "t0"."MiddleName"
+FROM "Founders" AS "f"
+INNER JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+LEFT JOIN (
+    SELECT "l1"."LegalEntityId", "l1"."FounderId", "f0"."Id", "f0"."DateCreate", "f0"."DateUpdate", "f0"."FirstName", "f0"."INN", "f0"."LastName", "f0"."MiddleName"
+    FROM "LegalEntityFounder" AS "l1"
+    INNER JOIN "Founders" AS "f0" ON "l1"."FounderId" = "f0"."Id"
+    WHERE "f0"."Id" = @__get_Item_0
+) AS "t0" ON "t"."Id" = "t0"."LegalEntityId"
+WHERE "f"."Id" = @__get_Item_0
+ORDER BY "f"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id", "t0"."LegalEntityId", "t0"."FounderId", "t0"."Id"
+2024-05-18 02:28:09.852 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."FounderId" = @__get_Item_0
+2024-05-18 02:28:09.870 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name"
+FROM "LegalEntitys" AS "l"
+WHERE EXISTS (
+    SELECT 1
+    FROM "LegalEntityFounder" AS "l0"
+    INNER JOIN "Founders" AS "f" ON "l0"."FounderId" = "f"."Id"
+    WHERE ("l"."Id" = "l0"."LegalEntityId") AND ("f"."Id" = @__request_FounderId_0))
+2024-05-18 02:28:09.878 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."Id" = @__id_0
+LIMIT 1
+2024-05-18 02:28:09.884 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?'], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "IndividualEntrepreneurs"
+WHERE "Id" = @p0;
+SELECT changes();
+2024-05-18 02:28:09.885 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__id_0
+LIMIT 1
+2024-05-18 02:28:09.885 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?'], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "Founders"
+WHERE "Id" = @p0;
+SELECT changes();
+2024-05-18 02:28:09.891 +03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2024-05-18 02:28:09.891 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.Delete (API.WebApi) in 54.8131ms
+2024-05-18 02:28:09.891 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.Delete (API.WebApi)'
+2024-05-18 02:28:09.891 +03:00 [INF] Request finished HTTP/2 DELETE https://localhost:44397/api/1/Founder/b9fd9992-ada2-40db-be77-ba71dd16f083 - - - 204 - - 55.5458ms
+2024-05-18 02:28:15.405 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:28:15.405 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:28:15.405 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:28:15.408 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:28:15.411 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:28:15.412 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:28:15.416 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 10.5298ms
+2024-05-18 02:28:15.416 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:28:15.422 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 12.7408ms
+2024-05-18 02:28:29.053 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 02:28:29.053 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:28:29.055 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:28:29.059 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:28:29.067 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 02:28:29.071 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 02:28:29.074 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 18.9081ms
+2024-05-18 02:28:29.074 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:28:29.075 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 22.1967ms
+2024-05-18 02:28:36.098 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/LegalEntity - -
+2024-05-18 02:28:36.098 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.LegalEntityController.GetAll (API.WebApi)'
+2024-05-18 02:28:36.100 +03:00 [INF] Route matched with {action = "GetAll", controller = "LegalEntity"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.LegalEntitys.Queries.GetLegalEntityList.LegalEntityListVm]] GetAll() on controller API.WebApi.Controllers.LegalEntityController (API.WebApi).
+2024-05-18 02:28:36.103 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:28:36.115 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."FirstName", "t"."INN", "t"."LastName", "t"."MiddleName", "t"."LegalEntityId", "t"."FounderId"
+FROM "LegalEntitys" AS "l"
+LEFT JOIN (
+    SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "l0"."LegalEntityId", "l0"."FounderId"
+    FROM "LegalEntityFounder" AS "l0"
+    INNER JOIN "Founders" AS "f" ON "l0"."FounderId" = "f"."Id"
+) AS "t" ON "l"."Id" = "t"."LegalEntityId"
+ORDER BY "l"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:28:36.117 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.LegalEntitys.Queries.GetLegalEntityList.LegalEntityListVm'.
+2024-05-18 02:28:36.120 +03:00 [INF] Executed action API.WebApi.Controllers.LegalEntityController.GetAll (API.WebApi) in 19.3817ms
+2024-05-18 02:28:36.120 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.LegalEntityController.GetAll (API.WebApi)'
+2024-05-18 02:28:36.121 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/LegalEntity - - - 200 - application/json;+charset=utf-8 23.2763ms
+2024-05-18 02:29:37.709 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:29:37.710 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:29:37.713 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:29:37.713 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:29:37.716 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:29:37.717 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:29:37.718 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 5.2471ms
+2024-05-18 02:29:37.718 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:29:37.719 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 9.9421ms
+2024-05-18 02:29:54.918 +03:00 [INF] Request starting HTTP/2 PUT https://localhost:44397/api/1/LegalEntity application/json 140
+2024-05-18 02:29:54.921 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.LegalEntityController.Update (API.WebApi)'
+2024-05-18 02:29:54.924 +03:00 [INF] Route matched with {action = "Update", controller = "LegalEntity"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Update(API.Application.LegalEntitys.Command.UpdateLegalEntity.UpdateLegalEntityCommand) on controller API.WebApi.Controllers.LegalEntityController (API.WebApi).
+2024-05-18 02:29:54.935 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:29:54.937 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name"
+FROM "LegalEntitys" AS "l"
+WHERE "l"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 02:29:54.945 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_Id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name"
+FROM "LegalEntitys" AS "l"
+WHERE "l"."Id" = @__request_Id_0
+LIMIT 1
+2024-05-18 02:29:54.965 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."FirstName", "t"."INN", "t"."LastName", "t"."MiddleName", "l"."Id", "t"."LegalEntityId", "t"."FounderId", "t0"."LegalEntityId", "t0"."FounderId", "t0"."Id", "t0"."DateCreate", "t0"."DateUpdate", "t0"."INN", "t0"."Name"
+FROM "LegalEntitys" AS "l"
+INNER JOIN (
+    SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "l0"."LegalEntityId", "l0"."FounderId"
+    FROM "LegalEntityFounder" AS "l0"
+    INNER JOIN "Founders" AS "f" ON "l0"."FounderId" = "f"."Id"
+) AS "t" ON "l"."Id" = "t"."LegalEntityId"
+LEFT JOIN (
+    SELECT "l1"."LegalEntityId", "l1"."FounderId", "l2"."Id", "l2"."DateCreate", "l2"."DateUpdate", "l2"."INN", "l2"."Name"
+    FROM "LegalEntityFounder" AS "l1"
+    INNER JOIN "LegalEntitys" AS "l2" ON "l1"."LegalEntityId" = "l2"."Id"
+    WHERE "l2"."Id" = @__get_Item_0
+) AS "t0" ON "t"."Id" = "t0"."FounderId"
+WHERE "l"."Id" = @__get_Item_0
+ORDER BY "l"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id", "t0"."LegalEntityId", "t0"."FounderId", "t0"."Id"
+2024-05-18 02:29:54.969 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "t"."LegalEntityId", "t"."FounderId", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN (
+    SELECT "l"."LegalEntityId", "l"."FounderId", "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+WHERE "f"."Id" = '508DACB5-E2AD-4FE9-B356-10C8F95386A2'
+ORDER BY "f"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:29:54.976 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?', @p1='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "LegalEntityFounder" ("FounderId", "LegalEntityId")
+VALUES (@p0, @p1);
+2024-05-18 02:29:54.976 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p4='?', @p0='?', @p1='?', @p2='?' (Size = 12), @p3='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "LegalEntitys" SET "DateCreate" = @p0, "DateUpdate" = @p1, "INN" = @p2, "Name" = @p3
+WHERE "Id" = @p4;
+SELECT changes();
+2024-05-18 02:29:54.981 +03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2024-05-18 02:29:54.981 +03:00 [INF] Executed action API.WebApi.Controllers.LegalEntityController.Update (API.WebApi) in 56.4152ms
+2024-05-18 02:29:54.981 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.LegalEntityController.Update (API.WebApi)'
+2024-05-18 02:29:54.981 +03:00 [INF] Request finished HTTP/2 PUT https://localhost:44397/api/1/LegalEntity application/json 140 - 204 - - 63.1414ms
+2024-05-18 02:30:00.664 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/LegalEntity - -
+2024-05-18 02:30:00.665 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.LegalEntityController.GetAll (API.WebApi)'
+2024-05-18 02:30:00.665 +03:00 [INF] Route matched with {action = "GetAll", controller = "LegalEntity"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.LegalEntitys.Queries.GetLegalEntityList.LegalEntityListVm]] GetAll() on controller API.WebApi.Controllers.LegalEntityController (API.WebApi).
+2024-05-18 02:30:00.665 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:30:00.670 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "l"."Id", "l"."DateCreate", "l"."DateUpdate", "l"."INN", "l"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."FirstName", "t"."INN", "t"."LastName", "t"."MiddleName", "t"."LegalEntityId", "t"."FounderId"
+FROM "LegalEntitys" AS "l"
+LEFT JOIN (
+    SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "l0"."LegalEntityId", "l0"."FounderId"
+    FROM "LegalEntityFounder" AS "l0"
+    INNER JOIN "Founders" AS "f" ON "l0"."FounderId" = "f"."Id"
+) AS "t" ON "l"."Id" = "t"."LegalEntityId"
+ORDER BY "l"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:30:00.673 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.LegalEntitys.Queries.GetLegalEntityList.LegalEntityListVm'.
+2024-05-18 02:30:00.673 +03:00 [INF] Executed action API.WebApi.Controllers.LegalEntityController.GetAll (API.WebApi) in 8.585ms
+2024-05-18 02:30:00.673 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.LegalEntityController.GetAll (API.WebApi)'
+2024-05-18 02:30:00.674 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/LegalEntity - - - 200 - application/json;+charset=utf-8 9.6094ms
+2024-05-18 02:30:27.486 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:30:27.486 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:30:27.486 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:30:27.490 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:30:27.493 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:30:27.495 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:30:27.496 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 9.6304ms
+2024-05-18 02:30:27.496 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:30:27.497 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 10.7920ms
+2024-05-18 02:30:49.638 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 02:30:49.639 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:30:49.641 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:30:49.642 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:30:49.647 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 02:30:49.651 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 02:30:49.651 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 10.6658ms
+2024-05-18 02:30:49.651 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:30:49.659 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 21.1108ms
+2024-05-18 02:31:15.630 +03:00 [INF] Request starting HTTP/2 POST https://localhost:44397/api/1/IndividualEntrepreneur application/json 92
+2024-05-18 02:31:15.631 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Create (API.WebApi)'
+2024-05-18 02:31:15.636 +03:00 [INF] Route matched with {action = "Create", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Create(API.Application.IndividualEntrepreneurs.Command.CreateIE.CreateIECommand) on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:31:15.646 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:31:15.652 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 02:31:15.662 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 02:31:15.666 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?', @p1='?', @p2='?', @p3='?', @p4='?' (Size = 12), @p5='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "IndividualEntrepreneurs" ("Id", "DateCreate", "DateUpdate", "FounderId", "INN", "Name")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+2024-05-18 02:31:15.671 +03:00 [INF] Executing OkObjectResult, writing value of type 'System.Guid'.
+2024-05-18 02:31:15.671 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.Create (API.WebApi) in 35.1233ms
+2024-05-18 02:31:15.671 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Create (API.WebApi)'
+2024-05-18 02:31:15.674 +03:00 [INF] Request finished HTTP/2 POST https://localhost:44397/api/1/IndividualEntrepreneur application/json 92 - 200 - application/json;+charset=utf-8 44.2864ms
+2024-05-18 02:31:27.884 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:31:27.885 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:31:27.885 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:31:27.886 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:31:27.893 +03:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:31:27.894 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:31:27.896 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 10.6754ms
+2024-05-18 02:31:27.897 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:31:27.900 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 15.4758ms
+2024-05-18 02:31:46.950 +03:00 [INF] Request starting HTTP/2 DELETE https://localhost:44397/api/1/IndividualEntrepreneur/56e796a6-1227-4b1a-821a-4f4e0c117855 - -
+2024-05-18 02:31:46.950 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Delete (API.WebApi)'
+2024-05-18 02:31:46.953 +03:00 [INF] Route matched with {action = "Delete", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Delete(System.Guid) on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:31:46.960 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:31:46.966 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_Id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."Id" = @__request_Id_0
+LIMIT 1
+2024-05-18 02:31:46.978 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__get_Item_0
+2024-05-18 02:31:46.986 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__entity_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+WHERE "f"."Id" = @__entity_FounderId_0
+LIMIT 2
+2024-05-18 02:31:46.989 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."Id" = @__id_0
+LIMIT 1
+2024-05-18 02:31:46.994 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?'], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "IndividualEntrepreneurs"
+WHERE "Id" = @p0;
+SELECT changes();
+2024-05-18 02:31:46.999 +03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2024-05-18 02:31:46.999 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.Delete (API.WebApi) in 45.1963ms
+2024-05-18 02:31:46.999 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Delete (API.WebApi)'
+2024-05-18 02:31:46.999 +03:00 [INF] Request finished HTTP/2 DELETE https://localhost:44397/api/1/IndividualEntrepreneur/56e796a6-1227-4b1a-821a-4f4e0c117855 - - - 204 - - 49.1967ms
+2024-05-18 02:31:51.066 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:31:51.067 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:31:51.067 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:31:51.067 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:31:51.070 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:31:51.072 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:31:51.072 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 4.9728ms
+2024-05-18 02:31:51.072 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:31:51.073 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 6.1151ms
+2024-05-18 02:32:23.247 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 02:32:23.248 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:32:23.250 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:32:23.252 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:32:23.255 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 02:32:23.257 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 02:32:23.259 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 9.2437ms
+2024-05-18 02:32:23.260 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:32:23.264 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 17.0994ms
+2024-05-18 02:32:38.690 +03:00 [INF] Request starting HTTP/2 PUT https://localhost:44397/api/1/IndividualEntrepreneur application/json 140
+2024-05-18 02:32:38.692 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi)'
+2024-05-18 02:32:38.695 +03:00 [INF] Route matched with {action = "Update", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Guid]] Update(API.Application.IndividualEntrepreneurs.Command.UpdateIE.UpdateIECommand) on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:32:38.711 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:32:38.713 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__request_INN_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."INN" = @__request_INN_0
+LIMIT 1
+2024-05-18 02:32:38.722 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Id_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "IndividualEntrepreneurs" AS "i"
+WHERE "i"."Id" = @__request_Id_0
+LIMIT 1
+2024-05-18 02:32:38.726 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__get_Item_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "Founders" AS "f"
+WHERE "f"."Id" = @__get_Item_0
+2024-05-18 02:32:38.728 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_FounderId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+WHERE "f"."Id" = @__request_FounderId_0
+LIMIT 1
+2024-05-18 02:32:38.738 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[@p4='?', @p0='?', @p1='?', @p2='?' (Size = 12), @p3='?' (Size = 13)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "IndividualEntrepreneurs" SET "DateUpdate" = @p0, "FounderId" = @p1, "INN" = @p2, "Name" = @p3
+WHERE "Id" = @p4;
+SELECT changes();
+2024-05-18 02:32:38.742 +03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2024-05-18 02:32:38.742 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi) in 47.1332ms
+2024-05-18 02:32:38.742 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.Update (API.WebApi)'
+2024-05-18 02:32:38.742 +03:00 [INF] Request finished HTTP/2 PUT https://localhost:44397/api/1/IndividualEntrepreneur application/json 140 - 204 - - 53.1674ms
+2024-05-18 02:32:43.731 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - -
+2024-05-18 02:32:43.731 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:32:43.732 +03:00 [INF] Route matched with {action = "GetAll", controller = "IndividualEntrepreneur"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm]] GetAll() on controller API.WebApi.Controllers.IndividualEntrepreneurController (API.WebApi).
+2024-05-18 02:32:43.732 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:32:43.734 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName"
+FROM "IndividualEntrepreneurs" AS "i"
+INNER JOIN "Founders" AS "f" ON "i"."FounderId" = "f"."Id"
+2024-05-18 02:32:43.736 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.IndividualEntrepreneurs.Queries.GetIEList.IEListVm'.
+2024-05-18 02:32:43.736 +03:00 [INF] Executed action API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi) in 4.2319ms
+2024-05-18 02:32:43.736 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.IndividualEntrepreneurController.GetAll (API.WebApi)'
+2024-05-18 02:32:43.740 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/IndividualEntrepreneur - - - 200 - application/json;+charset=utf-8 8.9479ms
+2024-05-18 02:32:50.245 +03:00 [INF] Request starting HTTP/2 GET https://localhost:44397/api/1/Founder - -
+2024-05-18 02:32:50.245 +03:00 [INF] Executing endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:32:50.245 +03:00 [INF] Route matched with {action = "GetAll", controller = "Founder"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[API.Application.Founders.Queries.GetFounderList.FounderListVm]] GetAll() on controller API.WebApi.Controllers.FounderController (API.WebApi).
+2024-05-18 02:32:50.245 +03:00 [INF] Entity Framework Core 5.0.5 initialized 'ApiDbContext' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2024-05-18 02:32:50.248 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "f"."Id", "f"."DateCreate", "f"."DateUpdate", "f"."FirstName", "f"."INN", "f"."LastName", "f"."MiddleName", "i"."Id", "i"."DateCreate", "i"."DateUpdate", "i"."FounderId", "i"."INN", "i"."Name", "t"."Id", "t"."DateCreate", "t"."DateUpdate", "t"."INN", "t"."Name", "t"."LegalEntityId", "t"."FounderId"
+FROM "Founders" AS "f"
+LEFT JOIN "IndividualEntrepreneurs" AS "i" ON "f"."Id" = "i"."FounderId"
+LEFT JOIN (
+    SELECT "l0"."Id", "l0"."DateCreate", "l0"."DateUpdate", "l0"."INN", "l0"."Name", "l"."LegalEntityId", "l"."FounderId"
+    FROM "LegalEntityFounder" AS "l"
+    INNER JOIN "LegalEntitys" AS "l0" ON "l"."LegalEntityId" = "l0"."Id"
+) AS "t" ON "f"."Id" = "t"."FounderId"
+ORDER BY "f"."Id", "i"."Id", "t"."LegalEntityId", "t"."FounderId", "t"."Id"
+2024-05-18 02:32:50.249 +03:00 [INF] Executing OkObjectResult, writing value of type 'API.Application.Founders.Queries.GetFounderList.FounderListVm'.
+2024-05-18 02:32:50.249 +03:00 [INF] Executed action API.WebApi.Controllers.FounderController.GetAll (API.WebApi) in 4.5159ms
+2024-05-18 02:32:50.249 +03:00 [INF] Executed endpoint 'API.WebApi.Controllers.FounderController.GetAll (API.WebApi)'
+2024-05-18 02:32:50.250 +03:00 [INF] Request finished HTTP/2 GET https://localhost:44397/api/1/Founder - - - 200 - application/json;+charset=utf-8 5.1959ms

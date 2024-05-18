@@ -1,20 +1,16 @@
 using API.Application;
-using API.Application.Common.Mappings;
-using API.Application.Interfaces;
 using API.DAL;
-using API.DAL.Interfaces;
-using API.DAL.Repositories;
-using API.Domain;
 using API.WebApi.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 
@@ -32,35 +28,44 @@ namespace API.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddApplication();
             services.AddPersistence(Configuration);
             services.AddControllers();
 
-            services.AddScoped<IBaseRepository<Founder>, FounderRepository>();
-            services.AddScoped<IBaseRepository<LegalEntity>, LegalEntityRepository>();
-            services.AddScoped<IBaseRepository<IndividualEntrepreneur>, IndividualEntrepreneurRepository>();
+            services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+            });
 
             services.AddVersionedApiExplorer(options =>
-                options.GroupNameFormat = "'v'VVV");
-
-            services.AddApiVersioning();
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
 
             services.AddSwaggerGen(config =>
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 config.IncludeXmlComments(xmlPath);
-            });
-            services.AddHttpContextAccessor();
 
-            //ƒл€ получени€ информации дл€ текущей выполн€ющейс€ сборке
-            services.AddAutoMapper(config =>
-            {
-                config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-                config.AddProfile(new AssemblyMappingProfile(typeof(IApiDbContext).Assembly));
+                config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
+                var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
+
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    config.SwaggerDoc(description.GroupName, new Microsoft.OpenApi.Models.OpenApiInfo()
+                    {
+                        Title = $"API {description.ApiVersion}",
+                        Version = description.ApiVersion.ToString()
+                    });
+                }
             });
+
+            services.AddHttpContextAccessor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,

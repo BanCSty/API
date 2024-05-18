@@ -3,10 +3,6 @@ using API.Application.LegalEntitys.Command.DeleteLegalEntity;
 using API.Application.LegalEntitys.Command.UpdateLegalEntity;
 using API.Application.LegalEntitys.Queries.GetLegalEntityDetails;
 using API.Application.LegalEntitys.Queries.GetLegalEntityList;
-using API.Domain;
-using API.WebApi.Models.LegalEntity;
-using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,12 +16,7 @@ namespace API.WebApi.Controllers
     [Route("api/{version:apiVersion}/[controller]")]
     public class LegalEntityController : BaseController
     {
-        public readonly IMapper _mapper;
 
-        public LegalEntityController(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
 
         /// <summary>
         /// Gets the list of LegalEntity
@@ -84,15 +75,14 @@ namespace API.WebApi.Controllers
         ///     FounderId: "FounderId id"
         /// }
         /// </remarks>
-        /// <param name="createLegalEntityDto">createLegalEntityDto object</param>
+        /// <param name="createLegalEntityCommand">CreateLegalEntityCommand object</param>
         /// <returns>Returns id (guid)</returns>
         /// <response code="201">Success</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateLegalEntityDto createLegalEntityDto)
+        public async Task<ActionResult<Guid>> Create([FromBody] CreateLegalEntityCommand createLegalEntityCommand)
         {
-            var command = _mapper.Map<CreateLegalEntityCommand>(createLegalEntityDto);
-            var LEId = await Mediator.Send(command);
+            var LEId = await Mediator.Send(createLegalEntityCommand);
 
             return Ok(LEId);
         }
@@ -107,15 +97,14 @@ namespace API.WebApi.Controllers
         ///     name: "updated LegalEntity name"
         /// }
         /// </remarks>
-        /// <param name="updateLegalEntityDto">LegalEntity object</param>
+        /// <param name="UpdateLegalEntityCommand">UpdateLegalEntityCommand object</param>
         /// <returns>Returns NoContent</returns>
         /// <response code="204">Success</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut]
-        public async Task<ActionResult<Guid>> Update([FromBody] UpdateLegalEntityDto updateLegalEntityDto)
+        public async Task<ActionResult<Guid>> Update([FromBody] UpdateLegalEntityCommand updateLegalEntityCommnad)
         {
-            var command = _mapper.Map<UpdateLegalEntityCommand>(updateLegalEntityDto);
-            await Mediator.Send(command);
+            await Mediator.Send(updateLegalEntityCommnad);
             return NoContent();
         }
 
