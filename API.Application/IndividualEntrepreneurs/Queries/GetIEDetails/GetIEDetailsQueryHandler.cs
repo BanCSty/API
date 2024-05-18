@@ -1,7 +1,6 @@
 ﻿using API.Application.Common.Exceptions;
-using API.Application.Interfaces;
+using API.DAL.Interfaces;
 using API.Domain;
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -12,21 +11,19 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
     public class GetIEDetailsQueryHandler
         : IRequestHandler<GetIEDetailsQuery, IEDetailsVm>
     {
-        private readonly IApiDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly IBaseRepository<IndividualEntrepreneur> _individualRepository;
 
-        public GetIEDetailsQueryHandler(IApiDbContext dbContext, IMapper mapper)
+        public GetIEDetailsQueryHandler(IBaseRepository<IndividualEntrepreneur> individualRepository)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _individualRepository = individualRepository;
         }
 
         public async Task<IEDetailsVm> Handle
             (GetIEDetailsQuery request, CancellationToken cancellationToken)
         {
             var entity =
-                await _dbContext.IndividualEntrepreneurs
-                .Include(f => f.Founder)
+                await _individualRepository.Select()
+                .Include(IE => IE.Founder)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(LE => LE.Id == request.Id, cancellationToken);
 
@@ -35,7 +32,7 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
 
-            return _mapper.Map<IEDetailsVm>(entity); ;
+            return new IEDetailsVm(entity);
         }
     }
 }
