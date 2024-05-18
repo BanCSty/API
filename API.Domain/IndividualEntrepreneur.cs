@@ -8,7 +8,7 @@ namespace API.Domain
     {
 
         public Guid Id { get; set; }
-        public long INN { get; set; }
+        public string INN { get; set; }
         public string Name { get; set; }
         public DateTime DateCreate { get; set; }
         public DateTime? DateUpdate { get; set; }
