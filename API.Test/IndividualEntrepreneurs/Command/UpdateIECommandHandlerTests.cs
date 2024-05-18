@@ -4,9 +4,6 @@ using API.Application.IndividualEntrepreneurs.Command.UpdateIE;
 using API.Test.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,10 +16,10 @@ namespace API.Test.IndividualEntrepreneurs.Command
         public async Task UpdateIECommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new UpdateIECommandHandler(Context);
-            var handlerCreate = new CreateIECommandHandler(Context);
+            var handler = new UpdateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
+            var handlerCreate = new CreateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
-            var updateINN = 111111111111;
+            var updateINN = "111111111111";
             var updateName = "IE Shorud";
             var updateFounderId = EntityContextFactory.FounderB.Id;
 
@@ -65,7 +62,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
         public async Task UpdateIECommandHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new UpdateIECommandHandler(Context);
+            var handler = new UpdateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
             // Act
             // Assert
@@ -75,7 +72,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
                     {
                         Id = Guid.NewGuid(),
                         Name = "Fail",
-                        INN = 911,
+                        INN = "911",
                         FounderId = Guid.NewGuid()
                     },
                     CancellationToken.None));

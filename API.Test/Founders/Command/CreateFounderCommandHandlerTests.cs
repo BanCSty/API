@@ -14,8 +14,8 @@ namespace API.Test.Founders.Command
         public async Task CreateFounderCommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new CreateFounderCommandHandler(Context);
-            var inn = 123456789103;
+            var handler = new CreateFounderCommandHandler(FounderRepository);
+            var inn = "123456789103";
             var firstName = "Bob";
             var lastName = "Tromb";
             var middleName = "Sorken";
@@ -43,8 +43,8 @@ namespace API.Test.Founders.Command
         public async Task CreateFounderCommandHandler_FailOnINNAlreadyExtist()
         {
             // Arrange - подготовка данных для теста
-            var handler = new CreateFounderCommandHandler(Context);
-            var inn = 123456789101;
+            var handler = new CreateFounderCommandHandler(FounderRepository);
+            var inn = "123456789101";
             var firstName = "Bob";
             var lastName = "Tromb";
             var middleName = "Sorken";

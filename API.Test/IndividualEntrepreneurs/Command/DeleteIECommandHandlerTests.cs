@@ -2,11 +2,8 @@
 using API.Application.IndividualEntrepreneurs.Command.CreateIE;
 using API.Application.IndividualEntrepreneurs.Command.DeleteIE;
 using API.Test.Common;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,9 +16,9 @@ namespace API.Test.IndividualEntrepreneurs.Command
         public async Task DeleteIECommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new DeleteIECommandHandler(Context);
+            var handler = new DeleteIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
-            var handlerCreate = new CreateIECommandHandler(Context);
+            var handlerCreate = new CreateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
             var IEId = await handlerCreate.Handle(
@@ -52,7 +49,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
         public async Task DeleteIECommandHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new DeleteIECommandHandler(Context);
+            var handler = new DeleteIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
             // Act
             // Assert

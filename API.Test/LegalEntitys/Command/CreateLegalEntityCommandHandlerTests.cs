@@ -1,12 +1,8 @@
-﻿using API.Application.Common.Exceptions;
-using API.Application.LegalEntitys.Command.CreateLegalEntity;
-using API.Domain;
+﻿using API.Application.LegalEntitys.Command.CreateLegalEntity;
 using API.Test.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,7 +15,7 @@ namespace API.Test.LegalEntitys.Command
         public async Task CreateLegalEntityCommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new CreateLegalEntityCommandHandler(Context);
+            var handler = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
             var LegalEntityId = await handler.Handle(
@@ -52,7 +48,7 @@ namespace API.Test.LegalEntitys.Command
         public async Task CreateLegalEntityCommandHandler_FailOnAlreadyUsedINN()
         {
             // Arrange - подготовка данных для теста
-            var handler = new CreateLegalEntityCommandHandler(Context);
+            var handler = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
             var LegalEntityId = await handler.Handle(

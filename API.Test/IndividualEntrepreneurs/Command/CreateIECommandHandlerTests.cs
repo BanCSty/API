@@ -19,7 +19,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
         public async Task CreateIECommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new CreateIECommandHandler(Context);
+            var handler = new CreateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
             var IEId = await handler.Handle(

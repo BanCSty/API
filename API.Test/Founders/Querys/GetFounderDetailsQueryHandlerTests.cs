@@ -1,8 +1,9 @@
 ﻿using API.Application.Common.Exceptions;
 using API.Application.Founders.Queries.GetFoundDetails;
 using API.DAL;
+using API.DAL.Interfaces;
+using API.Domain;
 using API.Test.Common;
-using AutoMapper;
 using Shouldly;
 using System;
 using System.Threading;
@@ -15,19 +16,19 @@ namespace API.Test.Founders.Querys
     public class GetFounderDetailsQueryHandlerTests
     {
         private readonly ApiDbContext Context;
-        private readonly IMapper Mapper;
+        private readonly IBaseRepository<Founder> _founderRepository;
 
         public GetFounderDetailsQueryHandlerTests(QueryTestFixture fixture)
         {
             Context = fixture.Context;
-            Mapper = fixture.Mapper;
+            _founderRepository = fixture.FounderRepository;
         }
 
         [Fact]
         public async Task GetFounderDetailsQueryHandler_Success()
         {
             // Arrange
-            var handler = new GetFounderDetailsQueryHandler(Context, Mapper);
+            var handler = new GetFounderDetailsQueryHandler(_founderRepository);
 
             // Act
             var result = await handler.Handle(
@@ -39,14 +40,14 @@ namespace API.Test.Founders.Querys
 
             // Assert
             result.ShouldBeOfType<FounderDetailsVm>();
-            result.INN.ShouldBe(123456789101);
+            result.INN.ShouldBe("123456789101");
         }
 
         [Fact]
         public async Task GetFounderDetailsQueryHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new GetFounderDetailsQueryHandler(Context, Mapper);
+            var handler = new GetFounderDetailsQueryHandler(_founderRepository);
 
             // Assert
             await Assert.ThrowsAsync<NotFoundException>(async () =>

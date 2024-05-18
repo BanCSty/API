@@ -2,13 +2,13 @@
 using API.Application.LegalEntitys.Command.CreateLegalEntity;
 using API.Application.LegalEntitys.Queries.GetLegalEntityDetails;
 using API.DAL;
+using API.DAL.Interfaces;
+using API.Domain;
 using API.Test.Common;
-using AutoMapper;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,20 +19,24 @@ namespace API.Test.LegalEntitys.Querys
     public class GetLegalEntityDetailsQueryHandlerTests
     {
         private readonly ApiDbContext Context;
-        private readonly IMapper Mapper;
+        private readonly IBaseRepository<LegalEntity> _legalEntityRepository;
+        private readonly IBaseRepository<Founder> _founderRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public GetLegalEntityDetailsQueryHandlerTests(QueryTestFixture fixture)
         {
             Context = fixture.Context;
-            Mapper = fixture.Mapper;
+            _legalEntityRepository = fixture.LegalEntityRepository;
+            _founderRepository = fixture.FounderRepository;
+            _unitOfWork = fixture.UnitOfWork;
         }
 
         [Fact]
         public async Task GetLegalEntityDetailsQueryHandler_Success()
         {
             // Arrange
-            var handler = new GetLegalEntityDetailsQueryHandler (Context, Mapper);
-            var handlerCreteLE = new CreateLegalEntityCommandHandler(Context);
+            var handler = new GetLegalEntityDetailsQueryHandler(_legalEntityRepository);
+            var handlerCreteLE = new CreateLegalEntityCommandHandler(_legalEntityRepository, _founderRepository, _unitOfWork);
 
             var LEId = await handlerCreteLE.Handle(
                 new CreateLegalEntityCommand
@@ -61,7 +65,7 @@ namespace API.Test.LegalEntitys.Querys
         public async Task GetLegalEntityDetailsQueryHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new GetLegalEntityDetailsQueryHandler(Context, Mapper);
+            var handler = new GetLegalEntityDetailsQueryHandler(_legalEntityRepository);
 
             // Assert
             await Assert.ThrowsAsync<NotFoundException>(async () =>

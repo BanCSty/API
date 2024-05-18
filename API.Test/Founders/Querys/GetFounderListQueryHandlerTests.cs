@@ -1,7 +1,8 @@
 ﻿using API.Application.Founders.Queries.GetFounderList;
 using API.DAL;
+using API.DAL.Interfaces;
+using API.Domain;
 using API.Test.Common;
-using AutoMapper;
 using Shouldly;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,19 +14,19 @@ namespace API.Test.Founders.Querys
     public class GetFounderListQueryHandlerTests
     {
         private readonly ApiDbContext Context;
-        private readonly IMapper Mapper;
+        private readonly IBaseRepository<Founder> _founderRepository;
 
         public GetFounderListQueryHandlerTests(QueryTestFixture fixture)
         {
             Context = fixture.Context;
-            Mapper = fixture.Mapper;
+            _founderRepository = fixture.FounderRepository;
         }
 
         [Fact]
         public async Task GetFounderListQueryHandler_Success()
         {
             // Arrange
-            var handler = new GetFounderListQueryHandler(Context, Mapper);
+            var handler = new GetFounderListQueryHandler(_founderRepository);
 
             // Act
             var result = await handler.Handle(

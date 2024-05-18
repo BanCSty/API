@@ -1,7 +1,7 @@
-﻿using API.Application.Common.Mappings;
-using API.Application.Interfaces;
-using API.DAL;
-using AutoMapper;
+﻿using API.DAL;
+using API.DAL.Interfaces;
+using API.DAL.Repositories;
+using API.Domain;
 using System;
 using Xunit;
 
@@ -10,17 +10,18 @@ namespace API.Test.Common
     public class QueryTestFixture : IDisposable
     {
         public ApiDbContext Context;
-        public IMapper Mapper;
+        public readonly IUnitOfWork UnitOfWork;
+        public readonly IBaseRepository<Founder> FounderRepository;
+        public readonly IBaseRepository<LegalEntity> LegalEntityRepository;
+        public readonly IBaseRepository<IndividualEntrepreneur> IndividualEntrepreneurRepository;
 
         public QueryTestFixture()
         {
             Context = EntityContextFactory.Create();
-            var configurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new AssemblyMappingProfile(
-                    typeof(IApiDbContext).Assembly));
-            });
-            Mapper = configurationProvider.CreateMapper();
+            UnitOfWork = new UnitOfWork(Context);
+            FounderRepository = new FounderRepository(Context);
+            LegalEntityRepository = new LegalEntityRepository(Context);
+            IndividualEntrepreneurRepository = new IndividualEntrepreneurRepository(Context);
         }
 
         public void Dispose()

@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,9 +19,9 @@ namespace API.Test.LegalEntitys.Command
         public async Task DeleteLegalEntityCommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new DeleteLegalEntityCommandHandler(Context);
+            var handler = new DeleteLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
-            var handlerCreate = new CreateLegalEntityCommandHandler(Context);
+            var handlerCreate = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             var LEId = await handlerCreate.Handle(
                 new CreateLegalEntityCommand
@@ -65,7 +64,7 @@ namespace API.Test.LegalEntitys.Command
         public async Task DeleteLegalEntityCommandHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new DeleteLegalEntityCommandHandler(Context);
+            var handler = new DeleteLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             // Act
             // Assert

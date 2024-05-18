@@ -18,7 +18,8 @@ namespace API.Test.Founders.Command
         public async Task UpdateNoteCommandHandler_Success()
         {
             // Arrange
-            var handler = new UpdateFounderCommandHandler(Context);
+            var handler = new UpdateFounderCommandHandler(FounderRepository, LegalEntityRepository, 
+                IndividualEntrepreneurRepository, UnitOfWork);
             var updatedFirstName = "Mamba";
 
             // Act
@@ -41,7 +42,8 @@ namespace API.Test.Founders.Command
         public async Task UpdateNoteCommandHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new UpdateFounderCommandHandler(Context);
+            var handler = new UpdateFounderCommandHandler(FounderRepository, LegalEntityRepository, 
+                IndividualEntrepreneurRepository, UnitOfWork);
 
             // Act
 
@@ -51,7 +53,7 @@ namespace API.Test.Founders.Command
                     new UpdateFounderCommand
                     {
                         Id = Guid.NewGuid(),
-                        INN = 11111111,
+                        INN = "11111111",
                         FirstName = "fail",
                         LastName = "fail",
                         MiddleName = "fail"
@@ -63,9 +65,10 @@ namespace API.Test.Founders.Command
         public async Task UpdateFounderCommandHandler_FailOnINNAlreadyExtist()
         {
             // Arrange - подготовка данных для теста
-            var handler = new UpdateFounderCommandHandler(Context);
+            var handler = new UpdateFounderCommandHandler(FounderRepository, LegalEntityRepository, 
+                IndividualEntrepreneurRepository, UnitOfWork);
             var id = Guid.Parse("b0e6cbae-68f3-4001-bcdc-5ce3f5114308");
-            var inn = 123456789102;
+            var inn = "123456789102";
             var firstName = "Bob";
             var lastName = "Tromb";
             var middleName = "Sorken";

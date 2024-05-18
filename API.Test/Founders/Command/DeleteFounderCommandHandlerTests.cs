@@ -17,7 +17,8 @@ namespace API.Test.Founders.Command
         public async Task DeleteFounderCommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new DeleteFounderCommandHandler(Context);
+            var handler = new DeleteFounderCommandHandler(FounderRepository, LegalEntityRepository, 
+                IndividualEntrepreneurRepository, UnitOfWork);
 
             // Act - выполнение логики
             await handler.Handle(new DeleteFounderCommand
@@ -35,7 +36,8 @@ namespace API.Test.Founders.Command
         public async Task DeleteFounderCommandHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new DeleteFounderCommandHandler(Context);
+            var handler = new DeleteFounderCommandHandler(FounderRepository, LegalEntityRepository, 
+                IndividualEntrepreneurRepository, UnitOfWork);
 
             // Act
             // Assert

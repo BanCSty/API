@@ -14,7 +14,7 @@ namespace API.Test.Common
         public static Founder FounderA = new Founder
         {
             Id = Guid.Parse("b0e6cbae-68f3-4001-bcdc-5ce3f5114308"),
-            INN = 123456789101,
+            INN = "123456789101",
             FirstName = "Alex",
             LastName = "Bodui",
             MiddleName = "Fring",
@@ -25,7 +25,7 @@ namespace API.Test.Common
         public static Founder FounderB = new Founder
         {
             Id = Guid.Parse("ce83865b-c636-42ec-9774-60398792dcbe"),
-            INN = 123456789102,
+            INN = "123456789102",
             FirstName = "Ban",
             LastName = "Broud",
             MiddleName = "Flintin",
@@ -37,7 +37,7 @@ namespace API.Test.Common
         {
             Id = Guid.Parse("de83865b-c636-42ec-9774-60398792dcbe"),
             Name = "IE Streem",
-            INN = 225252525222,
+            INN = "225252525222",
             DateCreate = DateTime.Now,
             DateUpdate = null,
             FounderId = FounderA.Id,
@@ -46,7 +46,7 @@ namespace API.Test.Common
         public static IndividualEntrepreneur IndividualEntrepreneurB = new IndividualEntrepreneur
         {
             Id = Guid.Parse("ee83865b-c636-42ec-9774-60398792dcbe"),
-            INN = 325252525222,
+            INN = "325252525222",
             Name = "IE Volga",
             DateCreate = DateTime.Now,
             DateUpdate = null,
@@ -57,7 +57,7 @@ namespace API.Test.Common
         public static LegalEntity LegalEntityA = new LegalEntity
         {
             Id = Guid.NewGuid(),
-            INN = 425252525222,
+            INN = "425252525222",
             Name = "OOO Doom",
             DateCreate = DateTime.Now,
             DateUpdate = null,
@@ -67,7 +67,7 @@ namespace API.Test.Common
         public static LegalEntity LegalEntityB = new LegalEntity
         {
             Id = Guid.NewGuid(),
-            INN = 525252525222,
+            INN = "525252525222",
             Name = "OOO Latron",
             DateCreate = DateTime.Now,
             DateUpdate = null,

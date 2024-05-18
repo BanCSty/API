@@ -18,9 +18,9 @@ namespace API.Test.LegalEntitys.Command
         public async Task UpdateLegalEntityCommandHandler_Success()
         {
             // Arrange - подготовка данных для теста
-            var handler = new UpdateLegalEntityCommandHandler(Context);
+            var handler = new UpdateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
-            var handlerCreate = new CreateLegalEntityCommandHandler(Context);
+            var handlerCreate = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             var LEId = await handlerCreate.Handle(
                 new CreateLegalEntityCommand
@@ -61,7 +61,7 @@ namespace API.Test.LegalEntitys.Command
         public async Task UpdateLegalEntityCommandHandler_FailOnWrongId()
         {
             // Arrange
-            var handler = new UpdateLegalEntityCommandHandler(Context);
+            var handler = new UpdateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             // Act
             // Assert
