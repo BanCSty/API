@@ -9,7 +9,7 @@
 - ASP.NET Core 5 WebAPI
 - Entity Framework Core
 - SQL Lite
-- Automapper
+- MediatR
 - Fluent Validation
 
 ## Минимально необходимые поля
