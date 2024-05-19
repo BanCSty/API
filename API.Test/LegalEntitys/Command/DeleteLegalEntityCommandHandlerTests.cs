@@ -23,45 +23,44 @@ namespace API.Test.LegalEntitys.Command
 
             var handlerCreate = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
-            var LEId = await handlerCreate.Handle(
+            await handlerCreate.Handle(
                 new CreateLegalEntityCommand
                 {
                     INN = EntityContextFactory.LegalEntityA.INN,
                     Name = EntityContextFactory.LegalEntityA.Name,
-                    FounderIds = new List<Guid> { EntityContextFactory.FounderA.Id, EntityContextFactory.FounderB.Id }
+                    FounderINNs = new List<string> { EntityContextFactory.FounderA.INN, EntityContextFactory.FounderB.INN }
                 },
                 CancellationToken.None);
 
             // Act - выполнение логики
             await handler.Handle(new DeleteLegalEntityCommand
             {
-                Id = LEId,
+                INN = EntityContextFactory.LegalEntityA.INN,
 
             }, CancellationToken.None);
 
-            Assert.Null(Context.LegalEntitys.SingleOrDefault(Le =>
-                Le.Id == EntityContextFactory.LegalEntityA.Id));
+            Assert.Null(Context.LegalEntitys.SingleOrDefault(LE =>
+                LE.INN == EntityContextFactory.LegalEntityA.INN));
 
             // Получение учредителя из базы данных
             var retrievedFounder = await Context.Founders
                 .Include(f => f.LegalEntities)
-                .FirstOrDefaultAsync(f => f.Id == EntityContextFactory.FounderA.Id);
+                .FirstOrDefaultAsync(f => f.INN == EntityContextFactory.FounderA.INN);
 
             var legalEntity = new LegalEntity
-            {
-                Id = LEId,
-                INN = EntityContextFactory.LegalEntityA.INN,
-                Name = EntityContextFactory.LegalEntityA.Name,
-                DateCreate = DateTime.Now,
-                Founders = new List<Founder> { EntityContextFactory.FounderA, EntityContextFactory.FounderB }
-            };
+            (
+                EntityContextFactory.LegalEntityA.INN,
+                EntityContextFactory.LegalEntityA.Name,
+                DateTime.Now,
+                new List<Founder> { EntityContextFactory.FounderA, EntityContextFactory.FounderB }
+            );
 
             //Проверяем, удалилась ли сущность юр лица из учредителя
             Assert.DoesNotContain(legalEntity, retrievedFounder.LegalEntities);
         }
 
         [Fact]
-        public async Task DeleteLegalEntityCommandHandler_FailOnWrongId()
+        public async Task DeleteLegalEntityCommandHandler_FailOnWrongINN()
         {
             // Arrange
             var handler = new DeleteLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
@@ -72,7 +71,7 @@ namespace API.Test.LegalEntitys.Command
                 await handler.Handle(
                     new DeleteLegalEntityCommand
                     {
-                        Id = Guid.NewGuid()
+                        INN = "123456789108"
                     },
                     CancellationToken.None));
         }

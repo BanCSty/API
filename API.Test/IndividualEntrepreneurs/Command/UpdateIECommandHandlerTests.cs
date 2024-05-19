@@ -3,7 +3,6 @@ using API.Application.IndividualEntrepreneurs.Command.CreateIE;
 using API.Application.IndividualEntrepreneurs.Command.UpdateIE;
 using API.Test.Common;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,47 +18,43 @@ namespace API.Test.IndividualEntrepreneurs.Command
             var handler = new UpdateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
             var handlerCreate = new CreateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
-            var updateINN = "111111111111";
             var updateName = "IE Shorud";
-            var updateFounderId = EntityContextFactory.FounderB.Id;
+            var updateFounderINN = EntityContextFactory.FounderB.INN;
 
             // Act - выполнение логики
-            var IEId = await handlerCreate.Handle(
+            await handlerCreate.Handle(
                 new CreateIECommand
                 {
                     INN = EntityContextFactory.IndividualEntrepreneurA.INN,
                     Name = EntityContextFactory.IndividualEntrepreneurA.Name,
-                    FounderId = EntityContextFactory.FounderA.Id
+                    FounderINN = EntityContextFactory.FounderA.INN
                 },
                 CancellationToken.None);
 
             await handler.Handle(
                 new UpdateIECommand
                 {
-                    Id = IEId,
-                    INN = updateINN,
+                    INN = EntityContextFactory.IndividualEntrepreneurA.INN,
                     Name = updateName,
-                    FounderId = updateFounderId
+                    FounderINN = updateFounderINN
                 },
                 CancellationToken.None);
 
             // Assert - проверка результата
             Assert.NotNull(
                 await Context.IndividualEntrepreneurs.SingleOrDefaultAsync(ie =>
-                    ie.Id == IEId &&
                     ie.Name == updateName &&
-                    ie.FounderId == updateFounderId &&
-                    ie.INN == updateINN));
+                    ie.INN == EntityContextFactory.IndividualEntrepreneurA.INN));
 
             //Проверяем, добавилась ли сущность ИП к учредителю
             Assert.NotNull(
                 await Context.Founders.SingleOrDefaultAsync(f =>
-                f.IndividualEntrepreneur.Id == IEId &&
-                f.Id == updateFounderId));
+                f.IndividualEntrepreneur.INN == EntityContextFactory.IndividualEntrepreneurA.INN 
+                && f.INN == EntityContextFactory.FounderB.INN));
         }
 
         [Fact]
-        public async Task UpdateIECommandHandler_FailOnWrongId()
+        public async Task UpdateIECommandHandler_FailOnWrongINN()
         {
             // Arrange
             var handler = new UpdateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
@@ -70,10 +65,9 @@ namespace API.Test.IndividualEntrepreneurs.Command
                 await handler.Handle(
                     new UpdateIECommand
                     {
-                        Id = Guid.NewGuid(),
                         Name = "Fail",
-                        INN = "911",
-                        FounderId = Guid.NewGuid()
+                        INN = "123456789108",
+                        FounderINN = "123456789102"
                     },
                     CancellationToken.None));
         }

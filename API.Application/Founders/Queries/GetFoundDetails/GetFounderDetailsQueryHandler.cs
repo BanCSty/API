@@ -25,11 +25,11 @@ namespace API.Application.Founders.Queries.GetFoundDetails
                 .Include(f => f.LegalEntities)
                 .Include(f => f.IndividualEntrepreneur)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(f => f.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(f => f.INN == request.INN, cancellationToken);
 
-            if (founderEntity == null || founderEntity.Id != request.Id)
+            if (founderEntity == null || founderEntity.INN != request.INN)
             {
-                throw new NotFoundException(nameof(Founder), request.Id);
+                throw new NotFoundException(nameof(Founder), request.INN);
             }
 
             var founderDetails = new FounderDetailsVm(founderEntity);

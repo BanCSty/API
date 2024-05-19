@@ -25,11 +25,11 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
                 await _legalEntityRepository.Select()
                 .Include(le => le.Founders)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(LE => LE.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(LE => LE.INN == request.INN, cancellationToken);
 
-            if (entity == null || entity.Id != request.Id)
+            if (entity == null || entity.INN != request.INN)
             {
-                throw new NotFoundException(nameof(LegalEntity), request.Id);
+                throw new NotFoundException(nameof(LegalEntity), request.INN);
             }
 
             return new LegalEntityDetailsVm(entity);

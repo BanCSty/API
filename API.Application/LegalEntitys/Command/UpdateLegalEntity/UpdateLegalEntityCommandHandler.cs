@@ -1,6 +1,6 @@
-﻿using API.Application.Common.Exceptions;
-using API.DAL.Interfaces;
+﻿using API.DAL.Interfaces;
 using API.Domain;
+using API.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,28 +30,19 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
             CancellationToken cancellationToken)
         {
             //Полчить LegalEntity по ИНН
-            var LeInnExist = await _legaEntityRepository.Select()
+            var legalEntity = await _legaEntityRepository.Select()
                 .FirstOrDefaultAsync(LE => LE.INN == request.INN, cancellationToken);
             //Если такое LegalEntity INN существует и не является обращаемой сущностью
             //, то выбрасываем исключение
-            if (LeInnExist != null && LeInnExist.Id != request.Id)
+            if (legalEntity != null && legalEntity.INN != request.INN)
                 throw new ArgumentException($"INN: {request.INN} already exist");
-
-            // Получить LegalEntity из базы данных
-            var legalEntity = await _legaEntityRepository.Select()
-                .FirstOrDefaultAsync(l => l.Id == request.Id, cancellationToken);
-
-            if (legalEntity == null || legalEntity.Id != request.Id)
-            {
-                throw new NotFoundException(nameof(LegalEntity), request.Id);
-            }
 
             _legaEntityRepository.Entry(legalEntity).Collection(LE => LE.Founders).Load();
 
             // Получить объекты учредителей на основе массива идентификаторов FounderIds
             var founders = await _founderRepository.Select()
                 .Include(f => f.LegalEntities)
-                .Where(f => request.FounderIds.Contains(f.Id))
+                .Where(f => request.FounderINNs.Contains(f.INN))
                 .ToListAsync();
 
             using (var transaction = _unitOfWork.BeginTransactionAsync())
@@ -62,17 +53,15 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
                     foreach (var founder in founders)
                     {
                         //Если учредитель еще не связан с ЮЛ происходит привязка
-                        if (!legalEntity.Founders.Any(f => f.Id == founder.Id))
+                        if (!legalEntity.Founders.Any(f => f.INN == founder.INN))
                         {
-                            legalEntity.Founders.Add(founder);
-                            founder.LegalEntities.Add(legalEntity);
+                            legalEntity.AddFounder(founder);
+                            founder.AddLegalEntity(legalEntity);
                         }
                     }
 
                     // Обновить другие данные юридического лица
-                    legalEntity.INN = request.INN;
-                    legalEntity.Name = request.Name;
-                    legalEntity.DateUpdate = DateTime.Now;
+                    legalEntity.UpdateName(request.Name);
 
                     // Сохранить изменения в базе данных
                     await _legaEntityRepository.Update(legalEntity, cancellationToken);

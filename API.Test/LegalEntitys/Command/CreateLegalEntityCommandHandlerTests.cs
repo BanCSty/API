@@ -18,12 +18,12 @@ namespace API.Test.LegalEntitys.Command
             var handler = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
-            var LegalEntityId = await handler.Handle(
+            await handler.Handle(
                 new CreateLegalEntityCommand
                 {
                     INN = EntityContextFactory.LegalEntityA.INN,
                     Name = EntityContextFactory.LegalEntityA.Name,
-                    FounderIds = new List<Guid> {EntityContextFactory.FounderA.Id, EntityContextFactory.FounderB.Id }
+                    FounderINNs = new List<string> {EntityContextFactory.FounderA.INN, EntityContextFactory.FounderB.INN }
                 },
                 CancellationToken.None);
 
@@ -31,14 +31,14 @@ namespace API.Test.LegalEntitys.Command
             Assert.NotNull(
                 await Context.LegalEntitys.SingleOrDefaultAsync(le =>
                     le.INN == EntityContextFactory.LegalEntityA.INN
-                    && le.Id == LegalEntityId));
+                    && le.Name == EntityContextFactory.LegalEntityA.Name));
 
             // Получение учредителя из базы данных
             var retrievedFounder = await Context.Founders
                 .Include(f => f.LegalEntities)
-                .FirstOrDefaultAsync(f => f.Id == EntityContextFactory.FounderA.Id);
+                .FirstOrDefaultAsync(f => f.INN == EntityContextFactory.FounderA.INN);
 
-            var legalEntity = await Context.LegalEntitys.FirstOrDefaultAsync(le => le.Id == LegalEntityId);
+            var legalEntity = await Context.LegalEntitys.FirstOrDefaultAsync(le => le.INN == EntityContextFactory.LegalEntityA.INN);
 
             //Проверяем, добавилась ли сущность юр лица к учредителю
             Assert.Contains(legalEntity, retrievedFounder.LegalEntities);
@@ -51,12 +51,12 @@ namespace API.Test.LegalEntitys.Command
             var handler = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
-            var LegalEntityId = await handler.Handle(
+            await handler.Handle(
                 new CreateLegalEntityCommand
                 {
                     INN = EntityContextFactory.LegalEntityA.INN,
                     Name = EntityContextFactory.LegalEntityA.Name,
-                    FounderIds = new List<Guid> { EntityContextFactory.FounderA.Id, EntityContextFactory.FounderB.Id }
+                    FounderINNs = new List<string> { EntityContextFactory.FounderA.INN, EntityContextFactory.FounderB.INN }
                 },
                 CancellationToken.None);
 
@@ -65,8 +65,8 @@ namespace API.Test.LegalEntitys.Command
                     new CreateLegalEntityCommand
                     {
                         INN = EntityContextFactory.LegalEntityA.INN,
-                        Name = EntityContextFactory.LegalEntityA.Name,
-                        FounderIds = new List<Guid> { EntityContextFactory.FounderA.Id, EntityContextFactory.FounderB.Id }
+                        Name = EntityContextFactory.LegalEntityA.Name,  
+                        FounderINNs = new List<string> { EntityContextFactory.FounderA.INN, EntityContextFactory.FounderB.INN }
                     },
                     CancellationToken.None));
         }

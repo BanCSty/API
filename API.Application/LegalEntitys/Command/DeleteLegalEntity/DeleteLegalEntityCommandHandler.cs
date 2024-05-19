@@ -29,11 +29,11 @@ namespace API.Application.LegalEntitys.Command.DeleteLegalEntity
         {
             // Находим удаляемую сущность LegalEntity
             var entity = await _legaEntityRepository.Select()
-                .FirstOrDefaultAsync(le => le.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(le => le.INN == request.INN, cancellationToken);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(LegalEntity), request.Id);
+                throw new NotFoundException(nameof(LegalEntity), request.INN);
             }
 
             //Подгружаем учредителей
@@ -46,11 +46,11 @@ namespace API.Application.LegalEntitys.Command.DeleteLegalEntity
                     // Удаляем ссылку на удаляемую сущность LegalEntity из каждой сущности Founder
                     foreach (var founder in entity.Founders)
                     {
-                        founder.LegalEntities.Remove(entity);
+                        founder.DeleteLegalEntity(entity);
                     }
 
                     // Удаляем саму сущность LegalEntity
-                    await _legaEntityRepository.Delete(entity.Id, cancellationToken);
+                    await _legaEntityRepository.Delete(entity, cancellationToken);
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                     await _unitOfWork.CommitTransactionAsync();

@@ -25,11 +25,11 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
                 await _individualRepository.Select()
                 .Include(IE => IE.Founder)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(LE => LE.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(LE => LE.INN == request.INN, cancellationToken);
 
-            if (entity == null || entity.Id != request.Id)
+            if (entity == null || entity.INN != request.INN)
             {
-                throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
+                throw new NotFoundException(nameof(IndividualEntrepreneur), request.INN);
             }
 
             return new IEDetailsVm(entity);

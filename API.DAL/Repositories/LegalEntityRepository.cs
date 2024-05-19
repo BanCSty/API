@@ -1,10 +1,7 @@
 ﻿using API.DAL.Interfaces;
 using API.Domain;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,11 +23,9 @@ namespace API.DAL.Repositories
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task Delete(Guid id, CancellationToken cancellationToken)
+        public async Task Delete(LegalEntity entity, CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.LegalEntitys.FirstOrDefaultAsync(LE => LE.Id == id, cancellationToken);
             _dbContext.Remove(entity);
-
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 

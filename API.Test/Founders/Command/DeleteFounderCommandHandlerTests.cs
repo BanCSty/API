@@ -2,9 +2,7 @@
 using API.Application.Founders.Command.DeleteFounder;
 using API.Test.Common;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -23,17 +21,17 @@ namespace API.Test.Founders.Command
             // Act - выполнение логики
             await handler.Handle(new DeleteFounderCommand
             {
-                FounderId = EntityContextFactory.FounderA.Id,
+                INN = EntityContextFactory.FounderA.INN,
 
             }, CancellationToken.None);
 
             // Assert - проверка результата
             Assert.Null(Context.Founders.SingleOrDefault(founder =>
-                founder.Id == EntityContextFactory.FounderA.Id));
+                founder.INN == EntityContextFactory.FounderA.INN));
         }
 
         [Fact]
-        public async Task DeleteFounderCommandHandler_FailOnWrongId()
+        public async Task DeleteFounderCommandHandler_FailOnWrongINN()
         {
             // Arrange
             var handler = new DeleteFounderCommandHandler(FounderRepository, LegalEntityRepository, 
@@ -45,7 +43,7 @@ namespace API.Test.Founders.Command
                 await handler.Handle(
                     new DeleteFounderCommand
                     {
-                        FounderId = Guid.NewGuid()
+                        INN = "123456789108"
                     },
                     CancellationToken.None));
         }
