@@ -8,9 +8,8 @@ namespace API.DAL.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<LegalEntity> builder)
         {
-            builder.HasKey(LE => LE.Id);
-            builder.HasIndex(LE => LE.Id).IsUnique();
-            builder.Property(LE => LE.INN).IsRequired();
+            builder.HasKey(LE => LE.INN);
+            builder.HasIndex(LE => LE.INN).IsUnique();
             builder.Property(LE => LE.Name).HasMaxLength(30).IsRequired();
 
 
@@ -27,14 +26,14 @@ namespace API.DAL.EntityTypeConfigurations
                 j => j
                     .HasOne(lf => lf.Founder)
                     .WithMany()
-                    .HasForeignKey(lf => lf.FounderId),
+                    .HasForeignKey(lf => lf.FounderINN),
                 j => j
                     .HasOne(lf => lf.LegalEntity)
                     .WithMany()
-                    .HasForeignKey(lf => lf.LegalEntityId),
+                    .HasForeignKey(lf => lf.LegalEntityINN),
                 j =>
                 {
-                    j.HasKey(lf => new { lf.LegalEntityId, lf.FounderId });
+                    j.HasKey(lf => new { lf.LegalEntityINN, lf.FounderINN });
                     j.ToTable("LegalEntityFounder");
                 }
             );

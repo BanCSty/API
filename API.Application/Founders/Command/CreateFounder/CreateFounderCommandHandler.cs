@@ -1,5 +1,6 @@
 ﻿using API.DAL.Interfaces;
 using API.Domain;
+using API.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace API.Application.Founders.Command.CreateFounder
 {
     public class CreateFounderCommandHandler
-        : IRequestHandler<CreateFounderCommand, Guid>
+        : IRequestHandler<CreateFounderCommand>
     {
         private readonly IBaseRepository<Founder> _founderRepository;
 
@@ -18,10 +19,11 @@ namespace API.Application.Founders.Command.CreateFounder
             _founderRepository = founderRepository;
         }
 
-        public async Task<Guid> Handle(CreateFounderCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateFounderCommand request, CancellationToken cancellationToken)
         {
 
-            var founderExist = await _founderRepository.Select().FirstOrDefaultAsync(f => f.INN == request.INN, cancellationToken);
+            var founderExist = await _founderRepository.Select()
+                .FirstOrDefaultAsync(f => f.INN == (INN)request.INN, cancellationToken);
 
             //Если Founder INN уже существует и используется в другой сущности(отличной от изменяемой)
             //, то выбрасываем исключение.Для предотвращения данных учредителей с одинаковыми ИНН
@@ -31,19 +33,18 @@ namespace API.Application.Founders.Command.CreateFounder
             }
 
             var founder = new Founder
-            {
-                Id = Guid.NewGuid(),
-                INN = request.INN,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                MiddleName = request.MiddleName,
-                DateCreate = DateTime.Now,
-                DateUpdate = null
-            };
+                (
+                    (INN)request.INN,
+                    new FullName(
+                        request.FirstName,
+                        request.LastName,
+                        request.MiddleName),
+                    DateTime.Now
+                );
 
             await _founderRepository.Create(founder, cancellationToken);
 
-            return founder.Id;
+            return Unit.Value;
         }
     }
 }

@@ -34,9 +34,9 @@ namespace API.Test.Founders.Command
             // Assert - проверка результата
             Assert.NotNull(
                 await Context.Founders.SingleOrDefaultAsync(founder =>
-                    founder.INN == inn && founder.FirstName == firstName &&
-                    founder.LastName == lastName && founder.MiddleName == middleName &&
-                    founder.Id == founderId));
+                    founder.INN == inn && founder.FullName.FirstName == firstName &&
+                    founder.FullName.LastName == lastName && founder.FullName.MiddleName == middleName &&
+                    founder.INN == inn));
         }
 
         [Fact]

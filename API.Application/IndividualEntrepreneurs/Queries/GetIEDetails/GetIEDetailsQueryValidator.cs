@@ -7,7 +7,10 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
     {
         public GetIEDetailsQueryValidator()
         {
-            RuleFor(getIEDetailsQuery => getIEDetailsQuery.Id).NotEqual(Guid.Empty);
+            RuleFor(getIEDetailsQuery => getIEDetailsQuery.INN)
+                .NotEmpty()
+                .Length(12)
+                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits.");
         }
     }
 }

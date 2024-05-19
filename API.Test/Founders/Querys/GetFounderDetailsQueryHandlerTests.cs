@@ -5,7 +5,6 @@ using API.DAL.Interfaces;
 using API.Domain;
 using API.Test.Common;
 using Shouldly;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -34,7 +33,7 @@ namespace API.Test.Founders.Querys
             var result = await handler.Handle(
                 new GetFounderDetailsQuery
                 {
-                    Id = EntityContextFactory.FounderA.Id
+                    INN = EntityContextFactory.FounderA.INN
                 },
                 CancellationToken.None);
 
@@ -54,7 +53,7 @@ namespace API.Test.Founders.Querys
                 await handler.Handle(
                     new GetFounderDetailsQuery
                     {
-                        Id = Guid.NewGuid()
+                        INN = "123456789108"
                     }, CancellationToken.None));
         }
     }

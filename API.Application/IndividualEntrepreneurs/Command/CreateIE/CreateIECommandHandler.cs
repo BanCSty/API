@@ -1,6 +1,7 @@
 ﻿using API.Application.Common.Exceptions;
 using API.DAL.Interfaces;
 using API.Domain;
+using API.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
 {
     public class CreateIECommandHandler
-        : IRequestHandler<CreateIECommand, Guid>
+        : IRequestHandler<CreateIECommand>
     {
         private readonly IBaseRepository<IndividualEntrepreneur> _IERepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -26,11 +27,12 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> Handle(CreateIECommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateIECommand request, CancellationToken cancellationToken)
         {
             //Получим сущность ИП по ИНН
             var IeInnExists = await _IERepository.Select()
                 .FirstOrDefaultAsync(IE => IE.INN == request.INN, cancellationToken);
+
             //Если Founder INN уже существует, то выбрасываем исключение.
             //Для предотвращения данных ИП с одинаковыми ИНН
             if (IeInnExists != null)
@@ -39,22 +41,21 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
             // Находим учредителя по его Id
             var founder = await _founderRepository.Select()
                 .Include(f => f.IndividualEntrepreneur)
-                .FirstOrDefaultAsync(f => f.Id == request.FounderId);
+                .FirstOrDefaultAsync(f => f.INN == request.INN);
             if (founder == null)
             {
-                throw new NotFoundException(nameof(IndividualEntrepreneur), request.FounderId);
+                throw new NotFoundException(nameof(IndividualEntrepreneur), request.FounderINN);
             }
 
             // Создаем нового индивидуального предпринимателя
             var individualEntrepreneur = new IndividualEntrepreneur
-            {
-                Id = Guid.NewGuid(),
-                INN = request.INN,
-                Name = request.Name,
-                DateCreate = DateTime.Now,
-                DateUpdate = null,
-                FounderId = request.FounderId
-            };  
+                (
+                    (INN)request.INN,
+                    request.Name,
+                    DateTime.Now,
+                    (INN)request.FounderINN
+                );
+
 
 
             using (var transaction = _unitOfWork.BeginTransactionAsync(cancellationToken))
@@ -62,16 +63,16 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
                 try
                 {
                     if (founder == null || founder.IndividualEntrepreneur != null)
-                        throw new ArgumentException($"Founder {founder.Id} already has an individual entrepreneur");                      
+                        throw new ArgumentException($"Founder {founder.INN} already has an individual entrepreneur");
 
                     //добавляем учредителя к индивидуальному предпринимателю 
-                    individualEntrepreneur.Founder = founder;
+                    individualEntrepreneur.AddFounder(founder);
 
                     // Создаем индивидуального предпринимателя
                     await _IERepository.Create(individualEntrepreneur, cancellationToken);
 
                     // Добавляем созданного индивидуального предпринимателя к учредителю
-                    founder.IndividualEntrepreneur = individualEntrepreneur;
+                    founder.AssignIndividualEntrepreneur(individualEntrepreneur);
 
                     // Сохраняем изменения и завершаем транзакцию
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -85,9 +86,7 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
                     throw;
                 }
             }
-
-            // Возвращаем Id созданного индивидуального предпринимателя
-            return individualEntrepreneur.Id;
+            return Unit.Value;
         }
     }
 }

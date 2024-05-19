@@ -11,7 +11,6 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
     {
         public LegalEntityDetailsVm(LegalEntity legalEntity)
         {
-            Id = legalEntity.Id;
             INN = legalEntity.INN;
             Name = legalEntity.Name;
             DateCreate = legalEntity.DateCreate;
@@ -20,17 +19,15 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
             Founders = legalEntity.Founders != null && legalEntity.Founders.Any()
                 ? legalEntity.Founders.Select(f => new FounderVm
                 {
-                    Id = f.Id,
-                    FirstName = f.FirstName,
-                    LastName = f.LastName,
-                    MiddleName = f.MiddleName,
+                    FirstName = f.FullName.FirstName,
+                    LastName = f.FullName.LastName,
+                    MiddleName = f.FullName.MiddleName,
                     INN = f.INN
 
                 }).ToList()
                 : null;
         }
 
-        public Guid Id { get; set; }
         public string INN { get; set; }
         public string Name { get; set; }
         public DateTime DateCreate { get; set; }

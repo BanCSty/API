@@ -2,7 +2,6 @@
 using API.Application.IndividualEntrepreneurs.Command.CreateIE;
 using API.Application.IndividualEntrepreneurs.Command.DeleteIE;
 using API.Test.Common;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,32 +20,32 @@ namespace API.Test.IndividualEntrepreneurs.Command
             var handlerCreate = new CreateIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
 
             // Act - выполнение логики
-            var IEId = await handlerCreate.Handle(
+            await handlerCreate.Handle(
                 new CreateIECommand
                 {
                     INN = EntityContextFactory.IndividualEntrepreneurA.INN,
                     Name = EntityContextFactory.IndividualEntrepreneurA.Name,
-                    FounderId = EntityContextFactory.FounderA.Id
+                    FounderINN = EntityContextFactory.FounderA.INN
                 },
                 CancellationToken.None);
 
             await handler.Handle(new DeleteIECommand
             {
-                Id = IEId,
+                INN = EntityContextFactory.IndividualEntrepreneurA.INN,
 
             }, CancellationToken.None);
 
             //Удалилось ли ИП
             Assert.Null(Context.IndividualEntrepreneurs.SingleOrDefault(Ie =>
-                Ie.Id == EntityContextFactory.IndividualEntrepreneurA.Id));
+                Ie.INN == EntityContextFactory.IndividualEntrepreneurA.INN));
 
             //Удалилась ли сущность ИП из учредителя
             Assert.Null(Context.Founders.SingleOrDefault(founders =>
-                founders.IndividualEntrepreneur.Id == IEId));
+                founders.IndividualEntrepreneur.INN == EntityContextFactory.IndividualEntrepreneurA.INN));
         }
 
         [Fact]
-        public async Task DeleteIECommandHandler_FailOnWrongId()
+        public async Task DeleteIECommandHandler_FailOnWrongINN()
         {
             // Arrange
             var handler = new DeleteIECommandHandler(IndividualEntrepreneurRepository, FounderRepository, UnitOfWork);
@@ -57,7 +56,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
                 await handler.Handle(
                     new DeleteIECommand
                     {
-                        Id = Guid.NewGuid()
+                        INN = "123456789108"
                     },
                     CancellationToken.None));
         }

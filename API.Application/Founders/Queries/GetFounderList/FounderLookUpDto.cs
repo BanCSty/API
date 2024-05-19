@@ -10,11 +10,10 @@ namespace API.Application.Founders.Queries.GetFounderList
     {
         public FounderLookUpDto(Founder founder)
         {
-            Id = founder.Id;
             INN = founder.INN;
-            FirstName = founder.FirstName;
-            LastName = founder.LastName;
-            MiddleName = founder.MiddleName;
+            FirstName = founder.FullName.FirstName;
+            LastName = founder.FullName.LastName;
+            MiddleName = founder.FullName.MiddleName;
             DateCreate = founder.DateCreate;
             DateUpdate = founder.DateUpdate;
 
@@ -22,7 +21,6 @@ namespace API.Application.Founders.Queries.GetFounderList
             individualEntrepreneurs = founder.IndividualEntrepreneur != null
                 ? new IndividualEntrepreneursVm
                 {
-                    Id = founder.IndividualEntrepreneur.Id,
                     Name = founder.IndividualEntrepreneur.Name,
                     INN = founder.IndividualEntrepreneur.INN
                 }
@@ -31,15 +29,12 @@ namespace API.Application.Founders.Queries.GetFounderList
             LegalEntities = founder.LegalEntities != null && founder.LegalEntities.Any()
                 ? founder.LegalEntities.Select(LE => new LegalEntityVm
                 {
-                    Id = LE.Id,
                     Name = LE.Name,
                     INN = LE.INN
                 }).ToList()
                 : null;
         }
 
-
-        public Guid Id { get; set; }
         public string INN { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

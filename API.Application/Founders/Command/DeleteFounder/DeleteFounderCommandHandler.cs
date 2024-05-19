@@ -20,7 +20,7 @@ namespace API.Application.Founders.Command.DeleteFounder
      *  at the application level.
      *  
      *  Поведение удаление учредителя:
-     *  Я выбрал поведение в которой допускается, что у Юридического лица 
+     *  Я выбрал поведение в котором допускается, что у Юридического лица 
      *  может не быть учредителей т.к. она проста в реализации. 
      *  Но я так же понимаю, что по факту можно настроить триггер 
      *  в БД или же на уровне приложения удалять Юридическое лицо 
@@ -51,11 +51,11 @@ namespace API.Application.Founders.Command.DeleteFounder
             CancellationToken cancellationToken)
         {
             var founder = await _founderRepository.Select()
-                .FirstOrDefaultAsync(f => f.Id == request.FounderId, cancellationToken);
+                .FirstOrDefaultAsync(f => f.INN == request.INN, cancellationToken);
 
             if (founder == null)
             {
-                throw new NotFoundException(nameof(Founder), request.FounderId);
+                throw new NotFoundException(nameof(Founder), request.INN);
             }
 
             //Подгружаем Юр. лица
@@ -67,7 +67,7 @@ namespace API.Application.Founders.Command.DeleteFounder
 
 
             var legalEntities = await _LegalEntityRepository.Select()
-                .Where(l => l.Founders.Any(f => f.Id == request.FounderId))
+                .Where(l => l.Founders.Any(f => f.INN == request.INN))
                 .ToListAsync(cancellationToken);
 
             using (var transaction = _unitOfWork.BeginTransactionAsync())
@@ -79,16 +79,16 @@ namespace API.Application.Founders.Command.DeleteFounder
                         foreach (var legalEntity in legalEntities)
                         {
                             // Удаляем учредителя из списка учредителей юридического лица
-                            legalEntity.Founders.Remove(founder);
+                            legalEntity.RemoveFounder(founder);
                         }
                     }
 
                     //Удаление ИП
                     if (founder.IndividualEntrepreneur != null)
-                        await _IERepository.Delete(founder.IndividualEntrepreneur.Id, cancellationToken);
+                        await _IERepository.Delete(founder.IndividualEntrepreneur, cancellationToken);
 
                     // Удаление учредителя
-                    await _founderRepository.Delete(founder.Id, cancellationToken);
+                    await _founderRepository.Delete(founder, cancellationToken);
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                     await _unitOfWork.CommitTransactionAsync();

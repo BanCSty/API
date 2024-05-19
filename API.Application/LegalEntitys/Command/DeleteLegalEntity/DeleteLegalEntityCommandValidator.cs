@@ -7,7 +7,10 @@ namespace API.Application.LegalEntitys.Command.DeleteLegalEntity
     {
         public DeleteLegalEntityCommandValidator()
         {
-            RuleFor(deleteLECommand => deleteLECommand.Id).NotEqual(Guid.Empty);
+            RuleFor(deleteLECommand => deleteLECommand.INN)
+                .NotEmpty()
+                .Length(12)
+                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits.");
         }
     }
 }
