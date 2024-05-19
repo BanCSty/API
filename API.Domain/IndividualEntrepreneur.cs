@@ -1,39 +1,21 @@
-﻿using API.Domain.ValueObjects;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace API.Domain
 {
     //ИП
     public class IndividualEntrepreneur
     {
-        public INN INN { get; private set; }
-        public string Name { get; private set; }
-        public DateTime DateCreate { get; private set; }
-        public DateTime? DateUpdate { get; private set; }
-        public INN FounderINN { get; private set; }
+
+        public Guid Id { get; set; }
+        public string INN { get; set; }
+        public string Name { get; set; }
+        public DateTime DateCreate { get; set; }
+        public DateTime? DateUpdate { get; set; }
+
+        public Guid FounderId { get; set; }
 
         // Учредитель ИП
-        public virtual Founder Founder { get; private set; }
-
-        public IndividualEntrepreneur(INN inn, string name, DateTime dateCreate, INN founderINN)
-        {
-            INN = inn ?? throw new ArgumentNullException(nameof(inn));
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            DateCreate = dateCreate;
-            FounderINN = founderINN;
-        }
-
-        public void UpdateName(string name)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            DateUpdate = DateTime.UtcNow;
-        }
-
-        public void AddFounder(Founder founder)
-        {
-            Founder = founder ?? throw new ArgumentNullException(nameof(founder));
-            DateUpdate = DateTime.UtcNow;
-        }
+        public virtual Founder Founder { get; set; }
     }
-
 }

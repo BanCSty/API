@@ -1,9 +1,12 @@
 ﻿using MediatR;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
 {
     public class GetIEDetailsQuery : IRequest<IEDetailsVm>
     {
-        public string INN { get; set; }
+        [Required]
+        public Guid Id { get; set; }
     }
 }

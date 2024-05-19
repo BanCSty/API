@@ -1,5 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +15,7 @@ namespace API.DAL.Interfaces
 
         IQueryable<T> Select();
 
-        Task Delete(T entity, CancellationToken cancellationToken);
+        Task Delete(Guid id, CancellationToken cancellationToken);
 
         Task Update(T entity, CancellationToken cancellationToken);
 

@@ -1,7 +1,6 @@
 ﻿using API.Application.Common.Exceptions;
 using API.DAL.Interfaces;
 using API.Domain;
-using API.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,17 +29,19 @@ namespace API.Application.IndividualEntrepreneurs.Command.UpdateIE
             CancellationToken cancellationToken)
         {
             //Получаем IndividualEntrepreneur по INN 
-            var entity = await _IERepository.Select()
+            var IeInnExists = await _IERepository.Select()
                 .FirstOrDefaultAsync(IE => IE.INN == request.INN, cancellationToken);
             //Если такой INN уже используется и он не равен исходной сущности,
             //выбрасываем исключение. Для предотвращения данных ИП с одинаковыми ИНН
-            if (entity != null && entity.INN != request.INN)
+            if (IeInnExists != null && IeInnExists.Id != request.Id)
                 throw new ArgumentException($"INN: {request.INN} already used");
 
+            var entity = await _IERepository.Select()
+                .FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(IndividualEntrepreneur), request.INN);
+                throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
 
             _IERepository.Entry(entity).Reference(IE => IE.Founder).Load();
@@ -49,22 +50,23 @@ namespace API.Application.IndividualEntrepreneurs.Command.UpdateIE
             //Находим учредителей, на которых хотим записать ИП
             var founder = await _founderRepository.Select()
                 .Include(f => f.IndividualEntrepreneur)
-                .FirstOrDefaultAsync(f => f.INN == request.FounderINN, cancellationToken);
+                .FirstOrDefaultAsync(f => f.Id == request.FounderId, cancellationToken);
 
             using (var transaction = _unitOfWork.BeginTransactionAsync(cancellationToken))
             {
                 try
                 {
-                    
-                    if (founder == null || founder.IndividualEntrepreneur != null)
-                        throw new ArgumentException($"Founder {founder.INN} not found or has already an Individual Entrepreneur");
-
                     // Обновляем данные IndividualEntrepreneur
-                    entity.UpdateName(request.Name);
-                    entity.AddFounder(founder);
+                    entity.Name = request.Name;
+                    entity.INN = request.INN;
+                    entity.DateUpdate = DateTime.Now;
+                    entity.FounderId = request.FounderId;
+
+                    if (founder == null || founder.IndividualEntrepreneur != null)
+                        throw new ArgumentException($"Founder {founder.Id} not found or has already an Individual Entrepreneur");
 
                     //Если учредитель существует и у него нет активных ИП то присваиваем ему сущность ИП
-                    founder.AssignIndividualEntrepreneur(entity);
+                    founder.IndividualEntrepreneur = entity;
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                     await _unitOfWork.CommitTransactionAsync();                   

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System;
 
 namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
 {
@@ -7,11 +8,8 @@ namespace API.Application.LegalEntitys.Command.UpdateLegalEntity
     {
         public UpdateLegalEntityCommandValidator()
         {
-            RuleFor(updateLECommand => updateLECommand.INN)
-                .NotEmpty()
-                .Length(12)
-                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits.");
-
+            RuleFor(updateLECommand => updateLECommand.Id).NotEqual(Guid.Empty);
+            RuleFor(updateLECommand => updateLECommand.INN).NotEmpty();
             RuleFor(updateLECommand => updateLECommand.Name).NotEmpty().MaximumLength(30);
         }
     }

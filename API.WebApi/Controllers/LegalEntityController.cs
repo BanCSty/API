@@ -40,23 +40,23 @@ namespace API.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets the LegalEntity by INN
+        /// Gets the LegalEntity by id
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// GET /LegalEntity/1234567891101
+        /// GET /LegalEntity/D34D349E-43B8-429E-BCA4-793C932FD580
         /// </remarks>
-        /// <param name="inn">LegalEntity INN</param>
+        /// <param name="id">LegalEntity id (guid)</param>
         /// <returns>Returns LegalEntity</returns>
         /// <response code="200">Success</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<LegalEntityDetailsVm>> GetAll(string inn)
+        public async Task<ActionResult<LegalEntityDetailsVm>> GetAll(Guid id)
         {
             //Сформируем запрос и с помощью Mediatotr отправим, затем результат вернем колиенту
             var query = new GetLegalEntityDetailsQuery
             {
-                INN = inn
+                Id = id
             };
             var vm = await Mediator.Send(query);
 
@@ -109,22 +109,22 @@ namespace API.WebApi.Controllers
         }
 
         /// <summary>
-        /// Deletes the LegalEntity by INN
+        /// Deletes the LegalEntity by id
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// DELETE /LegalEntity/1234567891101
+        /// DELETE /LegalEntity/88DEB432-062F-43DE-8DCD-8B6EF79073D3
         /// </remarks>
-        /// <param name="inn">INN of the LegalEntity</param>
+        /// <param name="id">Id of the LegalEntity (guid)</param>
         /// <returns>Returns NoContent</returns>
         /// <response code="204">Success</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<Guid>> Delete(string inn)
+        public async Task<ActionResult<Guid>> Delete(Guid id)
         {
             var command = new DeleteLegalEntityCommand
             {
-                INN = inn
+                Id = id
             };
             await Mediator.Send(command);
             return NoContent();

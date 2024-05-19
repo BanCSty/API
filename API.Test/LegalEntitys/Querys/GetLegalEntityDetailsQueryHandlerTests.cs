@@ -38,12 +38,12 @@ namespace API.Test.LegalEntitys.Querys
             var handler = new GetLegalEntityDetailsQueryHandler(_legalEntityRepository);
             var handlerCreteLE = new CreateLegalEntityCommandHandler(_legalEntityRepository, _founderRepository, _unitOfWork);
 
-            await handlerCreteLE.Handle(
+            var LEId = await handlerCreteLE.Handle(
                 new CreateLegalEntityCommand
                 {
                     INN = EntityContextFactory.IndividualEntrepreneurA.INN,
                     Name = EntityContextFactory.IndividualEntrepreneurA.Name,
-                    FounderINNs = new List<string> { EntityContextFactory.FounderA.INN}
+                    FounderIds = new List<Guid> { EntityContextFactory.FounderA.Id}
                 },
                 CancellationToken.None);
 
@@ -51,7 +51,7 @@ namespace API.Test.LegalEntitys.Querys
             var result = await handler.Handle(
                 new GetLegalEntityDetailsQuery
                 {
-                    INN = EntityContextFactory.IndividualEntrepreneurA.INN
+                    Id = LEId
                 },
                 CancellationToken.None);
 
@@ -62,7 +62,7 @@ namespace API.Test.LegalEntitys.Querys
         }
 
         [Fact]
-        public async Task GetLegalEntityDetailsQueryHandler_FailOnWrongINN()
+        public async Task GetLegalEntityDetailsQueryHandler_FailOnWrongId()
         {
             // Arrange
             var handler = new GetLegalEntityDetailsQueryHandler(_legalEntityRepository);
@@ -72,7 +72,7 @@ namespace API.Test.LegalEntitys.Querys
                 await handler.Handle(
                     new GetLegalEntityDetailsQuery
                     {
-                        INN = "123456789108"
+                        Id = Guid.NewGuid()
                     }, CancellationToken.None));
         }
     }

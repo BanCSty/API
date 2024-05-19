@@ -5,6 +5,7 @@ using API.DAL.Interfaces;
 using API.Domain;
 using API.Test.Common;
 using Shouldly;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace API.Test.LegalEntitys.Querys
                 {
                     INN = EntityContextFactory.IndividualEntrepreneurB.INN,
                     Name = EntityContextFactory.IndividualEntrepreneurB.Name,
-                    FounderINNs = new List<string> { EntityContextFactory.FounderB.INN }
+                    FounderIds = new List<Guid> { EntityContextFactory.FounderB.Id }
                 },
                 CancellationToken.None);
 

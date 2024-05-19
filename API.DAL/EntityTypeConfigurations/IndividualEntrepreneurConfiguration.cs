@@ -8,10 +8,11 @@ namespace API.DAL.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<IndividualEntrepreneur> builder)
         {
-            builder.HasKey(IE => IE.INN);
-            builder.HasIndex(IE => IE.INN).IsUnique();
+            builder.HasKey(IE => IE.Id);
+            builder.HasIndex(IE => IE.Id).IsUnique();
+            builder.Property(IE => IE.INN).IsRequired();
             builder.Property(IE => IE.Name).HasMaxLength(30).IsRequired();
-            builder.Property(IE => IE.FounderINN).IsRequired();
+            builder.Property(IE => IE.FounderId).IsRequired();
         }
     }
 }

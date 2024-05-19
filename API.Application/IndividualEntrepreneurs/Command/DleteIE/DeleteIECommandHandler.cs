@@ -28,11 +28,11 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
         {
             // Находим IndividualEntrepreneur по Id запроса
             var entity = await _IERepository.Select()
-                .FirstOrDefaultAsync(ie => ie.INN == request.INN, cancellationToken);
+                .FirstOrDefaultAsync(ie => ie.Id == request.Id, cancellationToken);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(IndividualEntrepreneur), request.INN);
+                throw new NotFoundException(nameof(IndividualEntrepreneur), request.Id);
             }
 
             _IERepository.Entry(entity).Reference(IE => IE.Founder).Load();
@@ -40,7 +40,7 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
             // Находим учредителя, связанного с IndividualEntrepreneurId
             var founder = await _founderRepository.Select()
                 .Include(f => f.IndividualEntrepreneur)
-                .SingleOrDefaultAsync(f => f.INN == entity.FounderINN, cancellationToken);
+                .SingleOrDefaultAsync(f => f.Id == entity.FounderId, cancellationToken);
 
             //Начало транзации удаления ИП и связанной с ним поля сущности у учредители
             using (var transaction = _unitOfWork.BeginTransactionAsync(cancellationToken))
@@ -49,10 +49,10 @@ namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
                 {
                     //Если есть учредитель связанный с этим ИП, то это поле в таблице учредителей будет null
                     if (founder != null)
-                        founder.DeleteIndividualEntrepreneur();
+                        founder.IndividualEntrepreneur = null;
 
                     // Удаляем IndividualEntrepreneur
-                    await _IERepository.Delete(entity, cancellationToken);
+                    await _IERepository.Delete(entity.Id, cancellationToken);
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                     await _unitOfWork.CommitTransactionAsync();                    

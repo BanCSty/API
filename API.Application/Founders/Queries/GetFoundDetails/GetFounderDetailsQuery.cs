@@ -1,9 +1,12 @@
 ﻿using MediatR;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Application.Founders.Queries.GetFoundDetails
 {
     public class GetFounderDetailsQuery : IRequest<FounderDetailsVm>
     {
-        public string INN { get; set; }
+        [Required]
+        public Guid Id { get; set; }
     }
 }

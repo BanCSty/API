@@ -38,22 +38,22 @@ namespace API.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets the IndividualEntrepreneur by INN
+        /// Gets the IndividualEntrepreneur by id
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// GET /IndividualEntrepreneur/1234567891101
+        /// GET /IndividualEntrepreneur/D34D349E-43B8-429E-BCA4-793C932FD580
         /// </remarks>
-        /// <param name="inn">IndividualEntrepreneur INN</param>
+        /// <param name="id">IndividualEntrepreneur id (guid)</param>
         /// <returns>Returns IndividualEntrepreneur</returns>
         /// <response code="200">Success</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEDetailsVm>> GetAll(string inn)
+        public async Task<ActionResult<IEDetailsVm>> GetAll(Guid id)
         {
             var query = new GetIEDetailsQuery
             {
-                INN = inn
+                Id = id
             };
             var vm = await Mediator.Send(query);
 
@@ -104,22 +104,22 @@ namespace API.WebApi.Controllers
         }
 
         /// <summary>
-        /// Deletes the IndividualEntrepreneur by INN
+        /// Deletes the IndividualEntrepreneur by id
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// DELETE /IndividualEntrepreneur/1234567891101
+        /// DELETE /IndividualEntrepreneur/88DEB432-062F-43DE-8DCD-8B6EF79073D3
         /// </remarks>
-        /// <param name="inn">INN of the IndividualEntrepreneur</param>
+        /// <param name="id">Id of the IndividualEntrepreneur (guid)</param>
         /// <returns>Returns NoContent</returns>
         /// <response code="204">Success</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<Guid>> Delete(string inn)
+        public async Task<ActionResult<Guid>> Delete(Guid id)
         {
             var command = new DeleteIECommand
             {
-                INN = inn
+                Id = id
             };
             await Mediator.Send(command);
             return NoContent();

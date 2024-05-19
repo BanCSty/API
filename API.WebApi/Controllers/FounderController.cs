@@ -44,19 +44,19 @@ namespace API.WebApi.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// GET /founder/1234567891101
+        /// GET /founder/D34D349E-43B8-429E-BCA4-793C932FD580
         /// </remarks>
-        /// <param name="inn">Founder INN</param>
+        /// <param name="id">Founder id (guid)</param>
         /// <returns>Returns FounderDto</returns>
         /// <response code="200">Success</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<FounderDetailsVm>> GetAll(string inn)
+        public async Task<ActionResult<FounderDetailsVm>> GetAll(Guid id)
         {
             //Сформируем запрос и с помощью Mediatotr отправим, затем результат вернем колиенту
             var query = new GetFounderDetailsQuery
             {
-                INN = inn
+                Id = id
             };
             var vm = await Mediator.Send(query);
 
@@ -110,22 +110,22 @@ namespace API.WebApi.Controllers
         }
 
         /// <summary>
-        /// Deletes the founder by INN
+        /// Deletes the founder by id
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// DELETE /founder/1234567891101
+        /// DELETE /founder/88DEB432-062F-43DE-8DCD-8B6EF79073D3
         /// </remarks>
-        /// <param name="inn">INN of the founder (guid)</param>
+        /// <param name="id">Id of the founder (guid)</param>
         /// <returns>Returns NoContent</returns>
         /// <response code="204">Success</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<Guid>> Delete(string inn)
+        public async Task<ActionResult<Guid>> Delete(Guid id)
         {
             var command = new DeleteFounderCommand
             {
-                INN = inn
+                FounderId = id
             };
             await Mediator.Send(command);
             return NoContent();

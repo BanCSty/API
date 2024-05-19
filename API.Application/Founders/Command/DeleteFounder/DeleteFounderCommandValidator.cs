@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System;
 
 namespace API.Application.Founders.Command.DeleteFounder
 {
@@ -6,10 +7,7 @@ namespace API.Application.Founders.Command.DeleteFounder
     {
         public DeleteFounderCommandValidator()
         {
-            RuleFor(deleteFounderCommand => deleteFounderCommand.INN)
-                .NotEmpty()
-                .Length(12)
-                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits.");
+            RuleFor(deleteFounderCommand => deleteFounderCommand.FounderId).NotEqual(Guid.Empty);
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using MediatR;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Application.IndividualEntrepreneurs.Command.DeleteIE
 {
     public class DeleteIECommand : IRequest
     {
-        public string INN { get; set; }
+        [Required]
+        public Guid Id { get; set; }
     }
 }

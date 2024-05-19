@@ -11,11 +11,7 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
     {
         public CreateLegalEntityCommandValidator()
         {
-            RuleFor(createLECommand => createLECommand.INN)
-                .NotEmpty()
-                .Length(12)
-                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits.");
-
+            RuleFor(createLECommand => createLECommand.INN).NotEmpty();
             RuleFor(createLECommand => createLECommand.Name).NotEmpty().MaximumLength(30);
         }
     }

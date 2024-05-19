@@ -9,6 +9,7 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
     {
         public IEDetailsVm(IndividualEntrepreneur individual)
         {
+            Id = individual.Id;
             INN = individual.INN;
             Name = individual.Name;
             DateCreate = individual.DateCreate;
@@ -17,13 +18,16 @@ namespace API.Application.IndividualEntrepreneurs.Queries.GetIEDetails
             Founder = individual.Founder != null
                 ? new FounderVm
                 {
-                    FirstName = individual.Founder.FullName.FirstName,
-                    LastName = individual.Founder.FullName.LastName,
-                    MiddleName = individual.Founder.FullName.MiddleName,
+                    Id = individual.Founder.Id,
+                    FirstName = individual.Founder.FirstName,
+                    LastName = individual.Founder.LastName,
+                    MiddleName = individual.Founder.MiddleName,
                     INN = individual.Founder.INN
                 }
                 : null;
         }
+
+        public Guid Id { get; set; }
         public string INN { get; set; }
         public string Name { get; set; }
         public DateTime DateCreate { get; set; }

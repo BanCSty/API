@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System;
 
 namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
 {
@@ -7,10 +8,7 @@ namespace API.Application.LegalEntitys.Queries.GetLegalEntityDetails
     {
         public GetLegalEntityDetailsQueryValidator()
         {
-            RuleFor(LE => LE.INN)
-                .NotEmpty()
-                .Length(12)
-                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits.");
+            RuleFor(EL => EL.Id).NotEqual(Guid.Empty);
         }
     }
 }

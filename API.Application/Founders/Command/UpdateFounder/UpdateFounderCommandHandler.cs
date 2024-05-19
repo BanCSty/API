@@ -1,7 +1,6 @@
 ﻿using API.Application.Common.Exceptions;
 using API.DAL.Interfaces;
 using API.Domain;
-using API.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -34,14 +33,23 @@ namespace API.Application.Founders.Command.UpdateFounder
             CancellationToken cancellationToken)
         {
             //Получаем Founder по reqiest INN
-            var founder = await _founderRepository.Select()
+            var founderINNExists = await _founderRepository.Select()
                 .FirstOrDefaultAsync(f => f.INN == request.INN, cancellationToken);
 
             //Если Founder с таким INN уже существует и используется в другой сущности(отличной от изменяемой)
             //, то выбрасываем исключение.Для предотвращения данных учредителей с одинаковыми ИНН
-            if (founder != null && founder.INN != request.INN)
+            if (founderINNExists != null && founderINNExists.Id != request.Id)
             {
                 throw new ArgumentException($"INN: {request.INN} already used");
+            }
+
+            //Получить Founder по Id request
+            var founder = await _founderRepository.Select()
+                .FirstOrDefaultAsync(f => f.Id == request.Id, cancellationToken);
+
+            if (founder == null || founder.Id != request.Id)
+            {
+                throw new NotFoundException(nameof(Founder), request.Id);
             }
 
 
@@ -55,46 +63,50 @@ namespace API.Application.Founders.Command.UpdateFounder
             {
                 try
                 {
-                    //Если массив INN Юр. лиц не пуст, то обновляем данные
-                    if (request.LegalEntityINNs != null)
+                    //Если массив Guid Юр. лиц не пуст, то обновляем данные
+                    if (request.LegalEntityIds != null)
                     {
-                        // Получить объекты ЮЛ на основе массива идентификаторов LegalEntityINNs [UpdateFounderCommand]
+                        // Получить объекты ЮЛ на основе массива идентификаторов LegalEntityIds [UpdateFounderCommand]
                         var legalEntitys = await _LegalEntityRepository.Select()
                             .Include(LE => LE.Founders)
-                            .Where(LE => request.LegalEntityINNs.Contains(LE.INN))
+                            .Where(LE => request.LegalEntityIds.Contains(LE.Id))
                             .ToListAsync();
 
                         if (legalEntitys == null)
-                            throw new NotFoundException(nameof(LegalEntity), request.LegalEntityINNs);
+                            throw new NotFoundException(nameof(LegalEntity), request.LegalEntityIds);
 
                         // Добавить новых ЮЛ к учредителю и учредителей к ЮЛ
                         foreach (var legalEntity in legalEntitys)
                         {
-                            if (!founder.LegalEntities.Any(LE => LE.INN == legalEntity.INN))
+                            if (!founder.LegalEntities.Any(LE => LE.Id == legalEntity.Id))
                             {
-                                legalEntity.AddFounder(founder);
-                                founder.AddLegalEntity(legalEntity);
+                                legalEntity.Founders.Add(founder);
+                                founder.LegalEntities.Add(legalEntity);
                             }
                         }
                     }
 
-                    //Обновление ссылки на ИП, если не пуст IndividualEntrepreneurINN запроса
-                    if (request.IndividualEntrepreneurINN != null)
+                    //Обновление ссылки на ИП, если не пуст IndividualEntrepreneurId запроса
+                    if (request.IndividualEntrepreneurId != Guid.Empty)
                     {
                         //Получим объект ИП по переданному в запросе Id
                         var IndividualEntrepreneurEntity = await _IERepository.Select()
-                            .FirstOrDefaultAsync(IE => IE.INN == request.IndividualEntrepreneurINN);
+                            .FirstOrDefaultAsync(IE => IE.Id == request.IndividualEntrepreneurId);
 
                         if (IndividualEntrepreneurEntity == null)
-                            throw new NotFoundException(nameof(IndividualEntrepreneur), request.IndividualEntrepreneurINN);
+                            throw new NotFoundException(nameof(IndividualEntrepreneur), request.IndividualEntrepreneurId);
 
                         //Добавим к учредителю 
-                        founder.AssignIndividualEntrepreneur(IndividualEntrepreneurEntity);
+                        founder.IndividualEntrepreneur = IndividualEntrepreneurEntity;
                     }
 
                     // Обновление данные учредителя
-                    founder.UpdateFullName(new FullName(request.FirstName, request.LastName, request.MiddleName));
-                    
+                    founder.INN = request.INN;
+                    founder.FirstName = request.FirstName;
+                    founder.LastName = request.LastName;
+                    founder.MiddleName = request.MiddleName;
+                    founder.DateUpdate = DateTime.Now;
+
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                     await _unitOfWork.CommitTransactionAsync();
                 }

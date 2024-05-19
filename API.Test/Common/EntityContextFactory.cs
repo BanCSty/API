@@ -1,64 +1,78 @@
 ﻿using API.DAL;
 using API.Domain;
-using API.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace API.Test.Common
 {
     public static class EntityContextFactory
     {
         public static Founder FounderA = new Founder
-        (
-            (INN)"123456789101",
-            new FullName(
-                "Alex",
-                "Bodui",
-                "Fring"),
-            DateTime.UtcNow
-        );
+        {
+            Id = Guid.Parse("b0e6cbae-68f3-4001-bcdc-5ce3f5114308"),
+            INN = "123456789101",
+            FirstName = "Alex",
+            LastName = "Bodui",
+            MiddleName = "Fring",
+            DateCreate = DateTime.Now,
+            DateUpdate = null,
+        };
 
         public static Founder FounderB = new Founder
-        (
-            (INN)"123456789102",
-            new FullName(
-                "Ban",
-                "Broud",
-                "Steli"),
-            DateTime.UtcNow
-        );
+        {
+            Id = Guid.Parse("ce83865b-c636-42ec-9774-60398792dcbe"),
+            INN = "123456789102",
+            FirstName = "Ban",
+            LastName = "Broud",
+            MiddleName = "Flintin",
+            DateCreate = DateTime.Now,
+            DateUpdate = null,
+        };
 
         public static IndividualEntrepreneur IndividualEntrepreneurA = new IndividualEntrepreneur
-        (
-            (INN)"225252525222",
-            "IE Streem",
-            DateTime.UtcNow,
-            FounderA.INN
-        );
+        {
+            Id = Guid.Parse("de83865b-c636-42ec-9774-60398792dcbe"),
+            Name = "IE Streem",
+            INN = "225252525222",
+            DateCreate = DateTime.Now,
+            DateUpdate = null,
+            FounderId = FounderA.Id,
+            Founder = FounderA
+        };
         public static IndividualEntrepreneur IndividualEntrepreneurB = new IndividualEntrepreneur
-        (
-            (INN)"225252525223",
-            "IE ITPEDIA",
-            DateTime.UtcNow,
-            FounderB.INN
-        );
+        {
+            Id = Guid.Parse("ee83865b-c636-42ec-9774-60398792dcbe"),
+            INN = "325252525222",
+            Name = "IE Volga",
+            DateCreate = DateTime.Now,
+            DateUpdate = null,
+            FounderId = FounderB.Id,
+            Founder = FounderB
+        };
 
         public static LegalEntity LegalEntityA = new LegalEntity
-        (
-            (INN)"425252525222",
-            "OOO Doom",
-            DateTime.UtcNow,
-            new List<Founder> { FounderA }
-        );
+        {
+            Id = Guid.NewGuid(),
+            INN = "425252525222",
+            Name = "OOO Doom",
+            DateCreate = DateTime.Now,
+            DateUpdate = null,
+            Founders = new List<Founder> { FounderA }
+        };
 
         public static LegalEntity LegalEntityB = new LegalEntity
-        (
-            (INN)"525252525222",
-            "OOO Latron",
-            DateTime.UtcNow,
-            new List<Founder> { FounderA, FounderB }
-        );
+        {
+            Id = Guid.NewGuid(),
+            INN = "525252525222",
+            Name = "OOO Latron",
+            DateCreate = DateTime.Now,
+            DateUpdate = null,
+            Founders = new List<Founder> { FounderA, FounderB }
+        };
 
         public static ApiDbContext Create()
         {
@@ -71,23 +85,25 @@ namespace API.Test.Common
             //Добавляем учредителей
             context.Founders.AddRange(
                 new Founder
-                (
-                    (INN)"123456789101",
-                    new FullName(
-                        "Alex",
-                        "Bodui",
-                        "Fring"),
-                    DateTime.UtcNow
-                ),
+                {
+                    Id = FounderA.Id,
+                    INN = FounderA.INN,
+                    FirstName = FounderA.FirstName,
+                    LastName = FounderA.LastName,
+                    MiddleName = FounderA.MiddleName,
+                    DateCreate = FounderA.DateCreate,
+                    DateUpdate = FounderA.DateUpdate,
+                },
                 new Founder
-                (
-                    (INN)"123456789102",
-                    new FullName(
-                        "Ban",
-                        "Broud",
-                        "Steli"),
-                    DateTime.UtcNow
-                )
+                {
+                    Id = FounderB.Id,
+                    INN = FounderB.INN,
+                    FirstName = FounderB.FirstName,
+                    LastName = FounderB.LastName,
+                    MiddleName = FounderB.MiddleName,
+                    DateCreate = FounderB.DateCreate,
+                    DateUpdate = FounderB.DateUpdate,
+                }
             );
 
             context.SaveChanges();

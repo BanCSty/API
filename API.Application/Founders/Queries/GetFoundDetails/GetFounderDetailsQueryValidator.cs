@@ -7,10 +7,7 @@ namespace API.Application.Founders.Queries.GetFoundDetails
     {
         public GetFounderDetailsQueryValidator()
         {
-            RuleFor(founder => founder.INN)
-                .NotEmpty()
-                .Length(12)
-                .Matches(@"^\d+$").WithMessage("INN must be exactly 12 digits."); ;
+            RuleFor(founder => founder.Id).NotEqual(Guid.Empty);
         }
     }
 }

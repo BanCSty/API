@@ -22,42 +22,43 @@ namespace API.Test.LegalEntitys.Command
 
             var handlerCreate = new CreateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
 
-            await handlerCreate.Handle(
+            var LEId = await handlerCreate.Handle(
                 new CreateLegalEntityCommand
                 {
                     INN = EntityContextFactory.LegalEntityA.INN,
                     Name = EntityContextFactory.LegalEntityA.Name,
-                    FounderINNs = new List<string> { EntityContextFactory.FounderA.INN, EntityContextFactory.FounderB.INN }
+                    FounderIds = new List<Guid> { EntityContextFactory.FounderA.Id, EntityContextFactory.FounderB.Id }
                 },
                 CancellationToken.None);
 
             // Act - выполнение логики
             await handler.Handle(new UpdateLegalEntityCommand
             {
-                INN = EntityContextFactory.LegalEntityA.INN,
+                Id = LEId,
+                INN = EntityContextFactory.LegalEntityB.INN,
                 Name = EntityContextFactory.LegalEntityB.Name,
-                FounderINNs = new List<string> { EntityContextFactory.FounderB.INN}
+                FounderIds = new List<Guid> { EntityContextFactory.FounderB.Id}
 
             }, CancellationToken.None);
 
             //Обновилась ли сущность Юр лица
-            Assert.NotNull(Context.LegalEntitys.SingleOrDefault(LE =>
-                LE.Name == EntityContextFactory.LegalEntityB.Name &&
-                LE.INN == EntityContextFactory.LegalEntityA.INN));
+            Assert.NotNull(Context.LegalEntitys.SingleOrDefault(Le =>
+                Le.Id == LEId &&
+                Le.INN == EntityContextFactory.LegalEntityB.INN));
 
             // Получение учредителя из базы данных
             var retrievedFounder = await Context.Founders
                 .Include(f => f.LegalEntities)
-                .FirstOrDefaultAsync(f => f.INN == EntityContextFactory.FounderB.INN);
+                .FirstOrDefaultAsync(f => f.Id == EntityContextFactory.FounderB.Id);
 
-            var legalEntity = await Context.LegalEntitys.FirstOrDefaultAsync(le => le.INN == EntityContextFactory.LegalEntityA.INN);
+            var legalEntity = await Context.LegalEntitys.FirstOrDefaultAsync(le => le.Id == LEId);
 
             //Проверяем, удалилась ли сущность юр лица из учредителя
             Assert.Contains(legalEntity, retrievedFounder.LegalEntities);
         }
 
         [Fact]
-        public async Task UpdateLegalEntityCommandHandler_FailOnWrongINN()
+        public async Task UpdateLegalEntityCommandHandler_FailOnWrongId()
         {
             // Arrange
             var handler = new UpdateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
@@ -68,9 +69,10 @@ namespace API.Test.LegalEntitys.Command
                 await handler.Handle(
                     new UpdateLegalEntityCommand
                     {
-                        INN = "123456789108", //fail
+                        Id = Guid.NewGuid(),
+                        INN = EntityContextFactory.LegalEntityB.INN,
                         Name = EntityContextFactory.LegalEntityB.Name,
-                        FounderINNs = new List<string> { EntityContextFactory.FounderB.INN }
+                        FounderIds = new List<Guid> { EntityContextFactory.FounderB.Id }
                     },
                     CancellationToken.None));
         }

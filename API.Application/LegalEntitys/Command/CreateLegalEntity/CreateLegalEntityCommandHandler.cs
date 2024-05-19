@@ -1,6 +1,5 @@
 ﻿using API.DAL.Interfaces;
 using API.Domain;
-using API.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 namespace API.Application.LegalEntitys.Command.CreateLegalEntity
 {
     public class CreateLegalEntityCommandHandler
-        : IRequestHandler<CreateLegalEntityCommand>
+        : IRequestHandler<CreateLegalEntityCommand, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBaseRepository<Founder> _founderRepository;
@@ -26,7 +25,7 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateLegalEntityCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateLegalEntityCommand request, CancellationToken cancellationToken)
         {
             //Полчить LegalEntity по ИНН
             var LeInnExist = await _legaEntityRepository.Select()
@@ -35,22 +34,20 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
             if (LeInnExist != null)
                 throw new ArgumentException($"INN: {request.INN} already exist");
 
- 
+            // Создать новое юридическое лицо
+            var legalEntity = new LegalEntity
+            {
+                Id = Guid.NewGuid(),
+                INN = request.INN,
+                Name = request.Name,
+                DateCreate = DateTime.UtcNow,
+            };
 
             // Получить объекты учредителей на основе массива идентификаторов FounderIds
             var founders = await _founderRepository.Select()
                 .Include(f => f.LegalEntities)
-                .Where(f => request.FounderINNs.Contains(f.INN))
+                .Where(f => request.FounderIds.Contains(f.Id))
                 .ToListAsync();
-
-            // Создать новое юридическое лицо
-            var legalEntity = new LegalEntity
-            (
-                (INN)request.INN,
-                request.Name,
-                DateTime.UtcNow,
-                founders
-            );
 
             using (var transaction = _unitOfWork.BeginTransactionAsync())
             {
@@ -59,8 +56,8 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
                     // Добавить учредителей к юридическому лицу и ЮЛ к учредителям
                     foreach (var founder in founders)
                     {
-                        legalEntity.AddFounder(founder);
-                        founder.AddLegalEntity(legalEntity);
+                        legalEntity.Founders.Add(founder);
+                        founder.LegalEntities.Add(legalEntity);
 
                         // Обновить состояние сущности
                         _founderRepository.Entry(founder).State = EntityState.Modified;
@@ -78,7 +75,7 @@ namespace API.Application.LegalEntitys.Command.CreateLegalEntity
                     throw;
                 }
             }
-            return Unit.Value;
+            return legalEntity.Id;
         }
     }
 }

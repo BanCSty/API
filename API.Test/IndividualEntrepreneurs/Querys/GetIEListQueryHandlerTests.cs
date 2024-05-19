@@ -39,7 +39,7 @@ namespace API.Test.IndividualEntrepreneurs.Querys
                 {
                     INN = EntityContextFactory.IndividualEntrepreneurB.INN,
                     Name = EntityContextFactory.IndividualEntrepreneurB.Name,
-                    FounderINN = EntityContextFactory.FounderB.INN
+                    FounderId = EntityContextFactory.FounderB.Id
                 },
                 CancellationToken.None);
 
