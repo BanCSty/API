@@ -27,23 +27,29 @@ namespace API.Domain
             _legalEntities = new List<LegalEntity>();
         }
 
+        public Founder()
+        {
+
+        }
+
         public void UpdateFullName(FullName fullName)
         {
             FullName = fullName ?? throw new ArgumentNullException(nameof(fullName));
-            DateUpdate = DateTime.UtcNow;
         }
 
         public void AddLegalEntity(LegalEntity legalEntity)
         {
             if (legalEntity == null) throw new ArgumentNullException(nameof(legalEntity));
-            _legalEntities.Add(legalEntity);
-            DateUpdate = DateTime.UtcNow;
+
+            if (!_legalEntities.Contains(legalEntity))
+            {
+                _legalEntities.Add(legalEntity);
+            }
         }
 
         public void AssignIndividualEntrepreneur(IndividualEntrepreneur individualEntrepreneur)
         {
             IndividualEntrepreneur = individualEntrepreneur ?? throw new ArgumentNullException(nameof(individualEntrepreneur));
-            DateUpdate = DateTime.UtcNow;
         }
 
         public void DeleteIndividualEntrepreneur()
@@ -55,7 +61,6 @@ namespace API.Domain
         {
             if (legalEntity == null) throw new ArgumentNullException(nameof(legalEntity));
             _legalEntities.Remove(legalEntity);
-            DateUpdate = DateTime.UtcNow;
         }
     }
 }

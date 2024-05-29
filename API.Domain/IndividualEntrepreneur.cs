@@ -23,16 +23,19 @@ namespace API.Domain
             FounderINN = founderINN;
         }
 
+        public IndividualEntrepreneur()
+        {
+
+        }
+
         public void UpdateName(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            DateUpdate = DateTime.UtcNow;
         }
 
         public void AddFounder(Founder founder)
         {
             Founder = founder ?? throw new ArgumentNullException(nameof(founder));
-            DateUpdate = DateTime.UtcNow;
         }
     }
 

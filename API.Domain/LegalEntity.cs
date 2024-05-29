@@ -23,24 +23,30 @@ namespace API.Domain
             _founders = founders ?? throw new ArgumentNullException(nameof(inn));
         }
 
+        public LegalEntity()
+        {
+
+        }
+
         public void UpdateName(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            DateUpdate = DateTime.UtcNow;
         }
 
         public void AddFounder(Founder founder)
         {
             if (founder == null) throw new ArgumentNullException(nameof(founder));
-            _founders.Add(founder);
-            DateUpdate = DateTime.UtcNow;
+
+            if (!_founders.Contains(founder))
+            {
+                _founders.Add(founder);
+            }
         }
 
         public void RemoveFounder(Founder founder)
         {
             if(founder == null) throw new ArgumentNullException(nameof(founder));
             _founders.Remove(founder);
-            DateUpdate = DateTime.Now;
         }
     }
 }
