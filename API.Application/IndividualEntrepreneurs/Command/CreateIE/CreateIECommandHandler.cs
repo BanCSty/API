@@ -41,7 +41,7 @@ namespace API.Application.IndividualEntrepreneurs.Command.CreateIE
             // Находим учредителя по его Id
             var founder = await _founderRepository.Select()
                 .Include(f => f.IndividualEntrepreneur)
-                .FirstOrDefaultAsync(f => f.INN == request.INN);
+                .FirstOrDefaultAsync(f => f.INN == request.FounderINN);
             if (founder == null)
             {
                 throw new NotFoundException(nameof(IndividualEntrepreneur), request.FounderINN);

@@ -1,4 +1,5 @@
 ﻿using API.Domain;
+using API.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,14 @@ namespace API.DAL.EntityTypeConfigurations
             builder.HasIndex(LE => LE.INN).IsUnique();
             builder.Property(LE => LE.Name).HasMaxLength(30).IsRequired();
 
+            // Настройка Complex Type INN
+            builder.Property(founder => founder.INN)
+                .HasConversion(
+                    inn => inn.Value,
+                    value => new INN(value)
+                )
+                .IsRequired()
+                .HasColumnName("INN");
 
             /*
              * отношение "многие ко многим" между Founder и LegalEntity позволяет описать связь,

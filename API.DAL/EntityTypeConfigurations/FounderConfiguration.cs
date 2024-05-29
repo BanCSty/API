@@ -1,4 +1,5 @@
 ﻿using API.Domain;
+using API.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,11 +11,23 @@ namespace API.DAL.EntityTypeConfigurations
         {
             builder.HasKey(founder => founder.INN);
             builder.HasIndex(founder => founder.INN).IsUnique();
-            builder.Property(founder => founder.INN).IsRequired();
-            builder.Property(founder => founder.FullName.FirstName).HasMaxLength(20).IsRequired();
-            builder.Property(founder => founder.FullName.LastName).HasMaxLength(20).IsRequired();
-            builder.Property(founder => founder.FullName.MiddleName).HasMaxLength(20).IsRequired();
-            
+
+            // Настройка Complex Type INN
+            builder.Property(founder => founder.INN)
+                .HasConversion(
+                    inn => inn.Value,
+                    value => new INN(value)
+                )
+                .IsRequired()
+                .HasColumnName("INN");
+
+            builder.OwnsOne(founder => founder.FullName, fullName =>
+            {
+                fullName.Property(f => f.FirstName).HasMaxLength(20).IsRequired();
+                fullName.Property(f => f.LastName).HasMaxLength(20).IsRequired();
+                fullName.Property(f => f.MiddleName).HasMaxLength(20).IsRequired();
+            });
+
             builder.HasOne(f => f.IndividualEntrepreneur)
                 .WithOne(ie => ie.Founder)
                 .HasForeignKey<IndividualEntrepreneur>(ie => ie.FounderINN);

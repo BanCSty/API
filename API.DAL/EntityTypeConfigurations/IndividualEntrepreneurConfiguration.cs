@@ -1,4 +1,5 @@
 ﻿using API.Domain;
+using API.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,15 @@ namespace API.DAL.EntityTypeConfigurations
             builder.HasKey(IE => IE.INN);
             builder.HasIndex(IE => IE.INN).IsUnique();
             builder.Property(IE => IE.Name).HasMaxLength(30).IsRequired();
-            builder.Property(IE => IE.FounderINN).IsRequired();
+
+            // Настройка Complex Type INN
+            builder.Property(founder => founder.INN)
+                .HasConversion(
+                    inn => inn.Value,
+                    value => new INN(value)
+                )
+                .IsRequired()
+                .HasColumnName("INN");
         }
     }
 }
