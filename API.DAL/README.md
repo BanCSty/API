@@ -1,6 +1,5 @@
 ﻿# Схема баззы данных
-![image](https://github.com/BanCSty/API/assets/67982113/ac5ae0e6-84a8-4697-92db-c57b85dd3dd5)
-
+![image](https://github.com/BanCSty/API/assets/67982113/594b0867-35a1-49d3-b8f8-07020ec50427)
 ## Таблица Founder(Учредитель)
 Созедржит данные об учредителе:
 - ИНН
