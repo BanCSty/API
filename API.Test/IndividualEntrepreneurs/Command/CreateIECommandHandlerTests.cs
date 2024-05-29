@@ -21,7 +21,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
                 {
                     INN = EntityContextFactory.IndividualEntrepreneurA.INN,
                     Name = EntityContextFactory.IndividualEntrepreneurA.Name,
-                    FounderINN = EntityContextFactory.FounderA.INN
+                    FounderINN = EntityContextFactory.FounderA.INN.Value
                 },
                 CancellationToken.None);
 
@@ -33,7 +33,7 @@ namespace API.Test.IndividualEntrepreneurs.Command
             //Проверяем, добавилась ли сущность ИП к учредителю
             Assert.NotNull(
                 await Context.Founders.SingleOrDefaultAsync(f => 
-                f.IndividualEntrepreneur.INN == EntityContextFactory.FounderA.INN));
+                f.IndividualEntrepreneur.INN == EntityContextFactory.IndividualEntrepreneurA.INN));
         }
     }
 }

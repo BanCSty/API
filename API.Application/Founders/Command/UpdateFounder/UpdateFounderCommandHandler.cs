@@ -44,6 +44,11 @@ namespace API.Application.Founders.Command.UpdateFounder
                 throw new ArgumentException($"INN: {request.INN} already used");
             }
 
+            if (founder == null)
+            {
+                throw new NotFoundException(nameof(IndividualEntrepreneur), request.INN);
+            }
+
 
             //Подгрузим данные ИП
             _founderRepository.Entry(founder).Reference(f => f.IndividualEntrepreneur).Load();

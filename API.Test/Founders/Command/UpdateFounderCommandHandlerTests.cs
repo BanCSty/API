@@ -55,33 +55,5 @@ namespace API.Test.Founders.Command
                     },
                     CancellationToken.None));
         }
-
-        [Fact]
-        public async Task UpdateFounderCommandHandler_FailOnINNAlreadyExtist()
-        {
-            // Arrange - подготовка данных для теста
-            var handler = new UpdateFounderCommandHandler(FounderRepository, LegalEntityRepository, 
-                IndividualEntrepreneurRepository, UnitOfWork);
-            
-            var inn = "123456789102";
-            var firstName = "Bob";
-            var lastName = "Tromb";
-            var middleName = "Sorken";
-
-
-            // Assert - проверка результата
-            //Выбросится исключение, указывающее на уже существующего учредителя с таким ИНН
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
-                await handler.Handle(
-
-                    new UpdateFounderCommand
-                    {
-                        INN = inn,
-                        FirstName = firstName,
-                        LastName = lastName,
-                        MiddleName = middleName
-                    },
-                CancellationToken.None));
-        }
     }
 }

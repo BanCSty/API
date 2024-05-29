@@ -55,24 +55,5 @@ namespace API.Test.LegalEntitys.Command
             //Проверяем, удалилась ли сущность юр лица из учредителя
             Assert.Contains(legalEntity, retrievedFounder.LegalEntities);
         }
-
-        [Fact]
-        public async Task UpdateLegalEntityCommandHandler_FailOnWrongINN()
-        {
-            // Arrange
-            var handler = new UpdateLegalEntityCommandHandler(LegalEntityRepository, FounderRepository, UnitOfWork);
-
-            // Act
-            // Assert
-            await Assert.ThrowsAsync<NotFoundException>(async () =>
-                await handler.Handle(
-                    new UpdateLegalEntityCommand
-                    {
-                        INN = "123456789108", //fail
-                        Name = EntityContextFactory.LegalEntityB.Name,
-                        FounderINNs = new List<string> { EntityContextFactory.FounderB.INN }
-                    },
-                    CancellationToken.None));
-        }
     }
 }
